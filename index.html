@@ -216,11 +216,11 @@
   <div class="layout">
     <aside class="sidebar">
       <nav class="nav-list" aria-label="Navegación principal">
-        <button class="nav-button" data-view="audit">📝 Auditar fuentes</button>
-        <button class="nav-button" data-view="results">📊 Resultados de la auditoria</button>
+        <button class="nav-button active" data-view="audit">📝 Auditar fuentes</button>
+        <button class="nav-button" data-view="results">📊 Resultados de la célula</button>
         <button class="nav-button" data-view="matrix">▦ Matriz de Evidencia</button>
         <button class="nav-button" data-view="critical">⚠ Hallazgos críticos</button>
-        <button class="nav-button active" data-view="instructions">ⓘ Instrucciones</button>
+        <button class="nav-button" data-view="instructions">ⓘ Instrucciones</button>
       </nav>
 
       <div class="source-picker" id="sourcePicker" aria-label="Seleccionar fuente"></div>
@@ -236,15 +236,15 @@
     </aside>
 
     <main>
-      <section class="view" id="view-audit">
+      <section class="view active" id="view-audit">
         <div class="hero">
           <h2>Investiga antes de decidir</h2>
-          <p>Esta herramienta no verifica la verdad automáticamente; sistematiza tu rigor profesional. Organiza la evidencia primaria que tú mismo rastreaste y aplica candados metodológicos para evitar que una alucinación bien redactada se disfrace de realidad objetiva y provoque decisiones sin sustento.</p>
-          <div class="principle">“Una respuesta convincente no equivale a evidencia”.</div>
+          <p>Registra únicamente lo que la célula pudo rastrear. Este auditor no decide por plausibilidad: organiza la evidencia aportada y aplica reglas de bloqueo.</p>
+          <div class="principle">“Una respuesta convincente no equivale a evidencia.”</div>
         </div>
 
         <div class="notice">
-          <strong>Responsabilidad de la persona:</strong> no inventes datos para completar campos. Si no encontraste algo, déjalo vacío o indica "No verificable".
+          <strong>Responsabilidad de la célula:</strong> no inventen datos para completar campos. Si no encontraron algo, déjenlo vacío o indiquen “No verificable”.
         </div>
 
         <form id="auditForm" autocomplete="off">
@@ -256,68 +256,23 @@
 
             <div class="grid">
               <div class="field">
-                <label>Nombre completo *</label>
-                <input name="personName" required placeholder="Ej. María Pérez">
+                <label>Código de célula *</label>
+                <input name="cellCode" required placeholder="Ej. CEL-04">
               </div>
-
               <div class="field">
-                <label>Identificación (ID / email) *</label>
-                <input name="personId" required placeholder="Ej. 12345678 / maria@dominio.com">
+                <label>Integrantes *</label>
+                <input name="members" required placeholder="Nombres separados por coma">
               </div>
-
-              <div class="field">
-                <label>Edad</label>
-                <input name="age" type="number" min="0" placeholder="Ej. 34">
-              </div>
-
-              <div class="field">
-                <label>Género</label>
-                <select name="gender">
-                  <option value="">No especificar</option>
-                  <option>Femenino</option>
-                  <option>Masculino</option>
-                  <option>No binario</option>
-                  <option>Prefiero no decir</option>
-                </select>
-              </div>
-
               <div class="field">
                 <label>Sector</label>
-                <select name="sector">
-                  <option value="">Selecciona sector</option>
-                  <option>Educación</option>
-                  <option>Salud</option>
-                  <option>Tecnología</option>
-                  <option>Finanzas</option>
-                  <option>Gobierno / Público</option>
-                  <option>Medio ambiente</option>
-                  <option>Transporte</option>
-                  <option>Energía</option>
-                  <option>Agricultura</option>
-                  <option>Comercio</option>
-                </select>
+                <input name="sector" placeholder="Educación, salud, tecnología…">
               </div>
-
               <div class="field">
                 <label>Tema</label>
-                <select name="topic">
-                  <option value="">Selecciona tema</option>
-                  <option>Política pública</option>
-                  <option>Salud pública</option>
-                  <option>Educación</option>
-                  <option>Economía</option>
-                  <option>Tecnología e innovación</option>
-                  <option>Cambio climático</option>
-                  <option>Seguridad</option>
-                  <option>Infraestructura</option>
-                  <option>Cultura y medios</option>
-                  <option>Derechos humanos</option>
-                </select>
+                <input name="topic" placeholder="Tema investigado">
               </div>
             </div>
           </div>
-
-          <!-- Rest of form unchanged (sections 1..5) -->
 
           <div class="card">
             <h3>1. Identifica la afirmación y la fuente</h3>
@@ -580,15 +535,6 @@
           <div class="critical-list" id="dashboardCriticalList"></div>
         </div>
 
-        <div class="card">
-          <h3>Fixtures de prueba (A–D)</h3>
-          <p class="card-subtitle">Ejecuta casos de prueba que validan las reglas principales.</p>
-          <div id="testResults" class="empty">Sin pruebas ejecutadas</div>
-          <div class="actions" style="margin-top:12px">
-            <button class="btn light" onclick="runFixtures()">Ejecutar pruebas (A–D)</button>
-          </div>
-        </div>
-
         <div class="actions">
           <button class="btn secondary" onclick="closeAuditAndSend()">Cerrar auditoría y enviar Matriz</button>
           <button class="btn light" onclick="exportCSV()">Exportar CSV</button>
@@ -627,7 +573,7 @@
         </div>
       </section>
 
-      <section class="view active" id="view-instructions">
+      <section class="view" id="view-instructions">
         <div class="card">
           <h2>Cómo usar la aplicación</h2>
           <ol>
@@ -663,12 +609,10 @@
     const DEFAULT_ENDPOINT = "https://script.google.com/macros/s/AKfycbzGLfesjxcEr5XDBhTdm_y4lxssTfuQUluBMeZv7hPVMZojcnvGLSW16v4jY7REPdr3BQ/exec";
 
     const emptySource = () => ({
-      personName: "",
-      personId: "",
-      age: "",
-      gender: "",
-      sector: "",
-      topic: "",
+      cellCode:"",
+      members:"",
+      sector:"",
+      topic:"",
       title:"",
       source:"",
       url:"",
@@ -726,7 +670,7 @@
     }
 
     function escapeHTML(value){
-      return String(value ?? "").replace(/[&<>\"']/g,c=>({
+      return String(value ?? "").replace(/[&<>"']/g,c=>({
         "&":"&amp;",
         "<":"&lt;",
         ">":"&gt;",
@@ -757,21 +701,11 @@
         renderAll();
         renderSingleResult();
         renderPicker();
-        // switch to results to show outcome?
       });
 
       if(!localStorage.getItem("auditorEndpoint")){
         localStorage.setItem("auditorEndpoint",DEFAULT_ENDPOINT);
       }
-    }
-
-    function showView(view){
-      document.querySelectorAll('.nav-button').forEach(b=>b.classList.remove('active'));
-      document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-      const btn = document.querySelector(`.nav-button[data-view="${view}"]`);
-      if(btn) btn.classList.add('active');
-      const el = document.getElementById('view-' + view);
-      if(el) el.classList.add('active');
     }
 
     function renderPicker(){
@@ -800,7 +734,7 @@
             : `Fuente ${i+1}, sin auditar`
         );
 
-        button.onclick = () => switchSource(i);
+        button.onclick=()=>switchSource(i);
         box.appendChild(button);
       });
     }
@@ -863,130 +797,168 @@
       alert("Borrador guardado en este dispositivo.");
     }
 
-    // Mejor algoritmo de auditoría: pesos normalizados y flags críticos
-    function auditSource(s) {
-      // Pesos por criterio (suman 100)
-      const weights = {
-        methodology: 22,
-        triangulation: 22,
-        authorship: 18,
-        ethics: 12,
-        verisimilitude: 12,
-        preservation: 14
+    function auditSource(s){
+      const methodology=Math.min(
+        20,
+        (s.methodology?4:0)+
+        s.methodologyChecks.length*2+
+        (s.methodologyAdequate==="yes"
+          ?4
+          :s.methodologyAdequate==="partial"
+            ?2
+            :0)
+      );
+
+      const triangulation=Math.min(
+        20,
+        (s.primarySource?6:0)+
+        (s.primaryUrl?4:0)+
+        (s.triangulationSources?3:0)+
+        (s.independentTriangulation==="yes"?7:0)
+      );
+
+      const authorship=Math.min(
+        20,
+        (s.author?5:0)+
+        (s.institution?4:0)+
+        (s.context?5:0)+
+        (s.interests?6:0)
+      );
+
+      const ethics=Math.min(
+        20,
+        (s.date?4:0)+
+        (s.url?2:0)+
+        s.transparencyChecks.length*3.5
+      );
+
+      const verisimilitude=Math.min(
+        20,
+        (s.verisimilitude?4:0)+
+        s.verisimilitudeChecks.length*4
+      );
+
+      const scores={
+        methodology:Math.round(methodology),
+        triangulation:Math.round(triangulation),
+        authorship:Math.round(authorship),
+        ethics:Math.round(ethics),
+        verisimilitude:Math.round(verisimilitude)
       };
 
-      // metodología (0-100)
-      let methodologyScore = Math.min(100,
-        (s.methodology ? 20 : 0) +
-        (s.methodologyChecks ? s.methodologyChecks.length * 10 : 0) +
-        (s.methodologyAdequate === "yes" ? 20 : s.methodologyAdequate === "partial" ? 10 : 0)
-      );
+      const total=Object.values(scores).reduce((a,b)=>a+b,0);
+      const possibleHallucination=s.nonexistentReference==="yes";
+      const contradicted=s.contradicted==="yes";
+      const hasEvidence=Boolean(s.evidenceSupport||s.evidenceAgainst);
+      const hasPrimary=Boolean(s.primarySource&&s.primaryUrl);
+      const methodologyBlocked=
+        s.centralFigure==="yes"&&s.methodologyAdequate!=="yes";
 
-      // autores/autoría (0-100)
-      let authorshipScore = Math.min(100,
-        (s.author ? 25 : 0) +
-        (s.institution ? 20 : 0) +
-        (s.context ? 25 : 0) +
-        (s.interests ? 30 : 0)
-      );
+      let label;
+      let shortLabel;
+      let color;
+      let icon;
 
-      // ética / trazabilidad (0-100)
-      let ethicsScore = Math.min(100,
-        (s.date ? 15 : 0) +
-        (s.url ? 10 : 0) +
-        ((s.transparencyChecks||[]).length * 25)
-      );
-
-      // verosimilitud (0-100)
-      let verisimilitudeScore = Math.min(100,
-        (s.verisimilitude ? 20 : 0) +
-        ((s.verisimilitudeChecks||[]).length * 20)
-      );
-
-      // triangulación (0-100)
-      const hasPrimary = Boolean(s.primarySource && s.primaryUrl);
-      let triangulationScore = Math.min(100,
-        (s.primarySource ? 30 : 0) +
-        (s.primaryUrl ? 20 : 0) +
-        (s.triangulationSources ? 20 : 0) +
-        (s.independentTriangulation === "yes" ? 30 : s.independentTriangulation === "same" ? 10 : 0)
-      );
-      if (!hasPrimary) triangulationScore = Math.max(0, triangulationScore - 40);
-
-      // preservación (0-100)
-      let preservationScore = s.permaLink ? 100 : 40;
-
-      // convertir a puntajes con pesos
-      const scores = {
-        methodology: Math.round((methodologyScore * weights.methodology) / 100),
-        triangulation: Math.round((triangulationScore * weights.triangulation) / 100),
-        authorship: Math.round((authorshipScore * weights.authorship) / 100),
-        ethics: Math.round((ethicsScore * weights.ethics) / 100),
-        verisimilitude: Math.round((verisimilitudeScore * weights.verisimilitude) / 100),
-        preservation: Math.round((preservationScore * weights.preservation) / 100)
-      };
-
-      const total = Object.values(scores).reduce((a,b)=>a+b,0);
-
-      // Flags críticos
-      const criticalFlags = [];
-      if (!hasPrimary) criticalFlags.push("no_primary");
-      if (s.nonexistentReference === "yes") criticalFlags.push("reference_missing");
-      if (s.contradicted === "yes") criticalFlags.push("contradicted_by_primary");
-      if (s.centralFigure === "yes" && s.methodologyAdequate !== "yes") criticalFlags.push("methodology_insufficient");
-      if (s.independentTriangulation === "same") criticalFlags.push("triangulation_dependent");
-      if (!s.permaLink && (total >= 60)) criticalFlags.push("preservation_incomplete");
-      if ((s.verisimilitudeChecks||[]).length < 2) criticalFlags.push("narrative_over_evidence");
-
-      // Clasificación
-      let label, shortLabel, color, icon;
-      if (criticalFlags.includes("reference_missing") || criticalFlags.includes("contradicted_by_primary")) {
-        label = "NO UTILIZABLE"; shortLabel = "No utilizable"; color = "red"; icon = "🔴";
-      } else if (!s.evidenceSupport && !s.evidenceAgainst) {
-        label = "NO VERIFICABLE"; shortLabel = "No verificable"; color = "black"; icon = "⚫";
-      } else if (total >= 75 && hasPrimary && !criticalFlags.includes("methodology_insufficient")) {
-        label = "SUSTENTADA / CONFIABLE"; shortLabel = "Sustentada"; color = "green"; icon = "🟢";
-      } else {
-        label = "ÚTIL CON RESERVAS"; shortLabel = "Con reservas"; color = "yellow"; icon = "🟡";
+      if(possibleHallucination||contradicted){
+        [label,shortLabel,color,icon]=[
+          "NO UTILIZABLE",
+          "No utilizable",
+          "red",
+          "🔴"
+        ];
+      }else if(!hasEvidence||(!hasPrimary&&s.independentTriangulation!=="yes")){
+        [label,shortLabel,color,icon]=[
+          "NO VERIFICABLE",
+          "No verificable",
+          "black",
+          "⚫"
+        ];
+      }else if(total>=80&&hasPrimary&&!methodologyBlocked){
+        [label,shortLabel,color,icon]=[
+          "SUSTENTADA / CONFIABLE",
+          "Sustentada",
+          "green",
+          "🟢"
+        ];
+      }else{
+        [label,shortLabel,color,icon]=[
+          "ÚTIL CON RESERVAS",
+          "Con reservas",
+          "yellow",
+          "🟡"
+        ];
       }
 
-      // Mensajes de riesgo
-      const riskMessages = [];
-      if (!hasPrimary) riskMessages.push("No se identificó una fuente primaria completa.");
-      if (s.centralFigure === "yes" && s.methodologyAdequate !== "yes") riskMessages.push("La cifra central no tiene metodología suficiente.");
-      if (s.independentTriangulation === "same") riskMessages.push("Las publicaciones dependen de la misma fuente.");
-      if (s.independentTriangulation !== "yes") riskMessages.push("No se confirmó triangulación independiente.");
-      if (s.nonexistentReference === "yes") riskMessages.push("Posible alucinación: referencia inexistente o incorrecta.");
-      if (s.contradicted === "yes") riskMessages.push("La fuente primaria contradice la afirmación.");
-      if (!s.permaLink) riskMessages.push("Preservación incompleta: falta Perma Link.");
-      if ((s.verisimilitudeChecks||[]).length < 2) riskMessages.push("Posible distancia entre narrativa y evidencia empírica.");
+      const preservationIncomplete=
+        (color==="green"||color==="yellow")&&!s.permaLink;
 
-      const mainFinding = color === "green" ? "Evidencia sólida con trazabilidad y metodología adecuada." :
-                          color === "yellow" ? "Evidencia útil pero con limitaciones relevantes." :
-                          color === "red" ? "Contradicción o referencia problemática detectada." :
-                          "No se puede verificar con los datos aportados.";
+      const risks=[];
 
-      const confidence = total >= 75 ? "Alta" : total >= 55 ? "Media" : "Baja";
+      if(!hasPrimary){
+        risks.push("No se identificó una fuente primaria completa.");
+      }
+
+      if(methodologyBlocked){
+        risks.push("La cifra central no tiene metodología suficiente.");
+      }
+
+      if(s.independentTriangulation==="same"){
+        risks.push("Las publicaciones dependen de la misma fuente.");
+      }
+
+      if(s.independentTriangulation!=="yes"){
+        risks.push("No se confirmó triangulación independiente.");
+      }
+
+      if(possibleHallucination){
+        risks.push("POSIBLE ALUCINACIÓN: existe una referencia comprobada como inexistente o incorrecta.");
+      }
+
+      if(contradicted){
+        risks.push("La fuente primaria contradice la afirmación.");
+      }
+
+      if(preservationIncomplete){
+        risks.push("PRESERVACIÓN INCOMPLETA: falta Perma Link.");
+      }
+
+      if(s.verisimilitudeChecks.length<2){
+        risks.push("Posible distancia entre calidad narrativa y calidad de evidencia.");
+      }
+
+      let mainFinding;
+
+      if(color==="green"){
+        mainFinding="La evidencia registrada respalda razonablemente la afirmación y supera los bloqueos.";
+      }else if(color==="yellow"){
+        mainFinding="Existe evidencia útil, pero presenta limitaciones que deben comunicarse.";
+      }else if(color==="red"){
+        mainFinding="Se detectó contradicción grave o una referencia problemática comprobada.";
+      }else{
+        mainFinding="La evidencia aportada no permite determinar si la afirmación es correcta o incorrecta.";
+      }
+
+      const confidence=
+        total>=80&&hasPrimary
+          ?"Alta"
+          :total>=55
+            ?"Media"
+            :"Baja";
 
       return {
-        auditId: uid(),
-        timestamp: new Date().toISOString(),
+        auditId:uid(),
+        timestamp:new Date().toISOString(),
         scores,
         total,
         label,
         shortLabel,
         color,
         icon,
-        criticalFlags,
-        riskSummary: riskMessages.join(" "),
+        possibleHallucination,
+        preservationIncomplete,
         mainFinding,
-        confidence,
-        recommendedAction: (() => {
-          if (criticalFlags.includes("reference_missing") || criticalFlags.includes("contradicted_by_primary")) return "No usar la fuente. Verificar la cita o buscar fuente primaria alternativa.";
-          if (!hasPrimary) return "Buscar la fuente primaria o marcar como no verificable.";
-          if (criticalFlags.includes("methodology_insufficient")) return "Solicitar detalles metodológicos o no usar cifra como concluyente.";
-          return "Documentar limitaciones; conservar Perma Link y buscar triangulación independiente.";
-        })()
+        risk:risks.join(" ")||"No se detectaron bloqueos con los datos aportados.",
+        confidence
       };
     }
 
@@ -1005,180 +977,561 @@
       renderAll();
       renderPicker();
       renderSingleResult();
+      showView("results");
+
+      if(!count){
+        alert("Aún no hay fuentes con datos para auditar.");
+      }
     }
 
-    // Nuevo renderAll para consolidar dashboards y hallazgos críticos
-    function renderAll(){
-      // global stats area
-      const audited = app.sources.filter(s => s.audit);
-      const n = audited.length || 0;
+    function scoreRows(a){
+      const labels={
+        methodology:"Metodología",
+        triangulation:"Triangulación",
+        authorship:"Autoría y sesgos",
+        ethics:"Ética y transparencia",
+        verisimilitude:"Verosimilitud"
+      };
 
-      const totals = {methodology:0, triangulation:0, authorship:0, ethics:0, verisimilitude:0, preservation:0};
-      audited.forEach(s => {
-        const a = s.audit.scores || {};
-        totals.methodology += a.methodology || 0;
-        totals.triangulation += a.triangulation || 0;
-        totals.authorship += a.authorship || 0;
-        totals.ethics += a.ethics || 0;
-        totals.verisimilitude += a.verisimilitude || 0;
-        totals.preservation += a.preservation || 0;
-      });
-
-      const criterionDashboard = document.getElementById('criterionDashboard');
-      if(criterionDashboard){
-        if(n===0){
-          criterionDashboard.innerHTML = '<div class="empty">Sin fuentes auditadas</div>';
-        } else {
-          criterionDashboard.innerHTML = `
-            <div class="grid">
-              <div class="stat"><strong>${Math.round(totals.methodology/n)}</strong><span>Metodología</span></div>
-              <div class="stat"><strong>${Math.round(totals.triangulation/n)}</strong><span>Triangulación</span></div>
-              <div class="stat"><strong>${Math.round(totals.authorship/n)}</strong><span>Autoría</span></div>
-              <div class="stat"><strong>${Math.round(totals.ethics/n)}</strong><span>Ética / Trazabilidad</span></div>
-              <div class="stat"><strong>${Math.round(totals.verisimilitude/n)}</strong><span>Verosimilitud</span></div>
-              <div class="stat"><strong>${Math.round(totals.preservation/n)}</strong><span>Preservación</span></div>
-            </div>
-          `;
-        }
-      }
-
-      // Comparison table
-      const comparisonTable = document.getElementById('comparisonTable');
-      if(comparisonTable){
-        if(n===0){
-          comparisonTable.innerHTML = '<tbody><tr><td class="empty">Sin fuentes auditadas</td></tr></tbody>';
-        } else {
-          const rows = audited.map((s,idx)=>{
-            const a = s.audit;
-            return `<tr>
-              <td><strong>Fuente ${idx+1}</strong><div>${escapeHTML(s.title||s.claim||'—')}</div></td>
-              <td>${a.icon} ${a.shortLabel}</td>
-              <td>${a.total}</td>
-              <td>${a.confidence}</td>
-              <td>${escapeHTML(a.mainFinding)}</td>
-            </tr>`;
-          }).join('');
-          comparisonTable.innerHTML = `<thead><tr><th>Fuente</th><th>Clasificación</th><th>Puntaje</th><th>Confianza</th><th>Hallazgo</th></tr></thead><tbody>${rows}</tbody>`;
-        }
-      }
-
-      // Aggregated criticals
-      let criticals = [];
-      app.sources.forEach((s, idx) => {
-        if (!s.audit) return;
-        (s.audit.criticalFlags || []).forEach(flag => {
-          criticals.push({flag, idx, text: s.audit.riskSummary || s.audit.mainFinding, label: s.audit.shortLabel, recommended: s.audit.recommendedAction});
-        });
-      });
-
-      const dashboardCriticalList = document.getElementById('dashboardCriticalList');
-      if(dashboardCriticalList){
-        dashboardCriticalList.innerHTML = '';
-        criticals.forEach(c => {
-          const el = document.createElement('div');
-          el.className = 'critical-item';
-          el.innerHTML = `<strong>Fuente ${c.idx+1} — ${escapeHTML(c.flag)}</strong><div style="margin-top:6px">${escapeHTML(c.text)}</div><div style="margin-top:8px;color:#7a2b2b"><em>Recomendación:</em> ${escapeHTML(c.recommended)}</div>`;
-          dashboardCriticalList.appendChild(el);
-        });
-        document.getElementById('dashboardCriticalCount').textContent = `${criticals.length} riesgos`;
-      }
-
-      // Global stats small cards
-      const globalStats = document.getElementById('globalStats');
-      if(globalStats){
-        globalStats.innerHTML = '';
-        const totalAudited = n;
-        const totalscore = audited.reduce((acc,s)=>acc + (s.audit.total||0),0);
-        const avgScore = n?Math.round(totalscore/n):0;
-        const box = document.createElement('div'); box.className='stat'; box.innerHTML = `<strong>${totalAudited}</strong><span>Fuentes auditadas</span>`;
-        const box2 = document.createElement('div'); box2.className='stat'; box2.innerHTML = `<strong>${avgScore}</strong><span>Puntaje promedio</span>`;
-        globalStats.appendChild(box); globalStats.appendChild(box2);
-      }
-
-      // Critical list page
-      const criticalList = document.getElementById('criticalList');
-      if(criticalList){
-        criticalList.innerHTML = '';
-        criticals.forEach(c=>{
-          const el = document.createElement('div'); el.className='critical-item';
-          el.innerHTML = `<strong>Fuente ${c.idx+1} — ${escapeHTML(c.flag)}</strong><div style="margin-top:6px">${escapeHTML(c.text)}</div><div style="margin-top:8px;color:#7a2b2b"><em>Recomendación:</em> ${escapeHTML(c.recommended)}</div>`;
-          criticalList.appendChild(el);
-        });
-        document.getElementById('criticalCount').textContent = `${criticals.length} riesgos`;
-      }
-
+      return Object.entries(a.scores).map(([key,value])=>
+        `<div class="score-row">
+          <span>${labels[key]}</span>
+          <div class="bar">
+            <span style="width:${value*5}%"></span>
+          </div>
+          <strong>${value}/20</strong>
+        </div>`
+      ).join("");
     }
 
     function renderSingleResult(){
-      const container = document.getElementById('singleResult');
-      const s = app.sources[app.current];
-      if(!s || !s.audit){
-        container.innerHTML = '';
+      const s=app.sources[app.current];
+      const box=document.getElementById("singleResult");
+
+      if(!s.audit){
+        box.innerHTML="";
         return;
       }
-      const a = s.audit;
-      container.innerHTML = `
-        <div class="card">
-          <div class="section-title"><h3>Resultado — Fuente ${app.current+1}</h3><span class="badge ${a.color}">${a.icon} ${a.shortLabel}</span></div>
-          <div class="result-box ${a.color}">
-            <div class="finding"><strong>Hallazgo:</strong> ${escapeHTML(a.mainFinding)}</div>
-            <div style="margin-top:8px"><strong>Riesgos:</strong> ${escapeHTML(a.riskSummary || a.risk || 'No se detectaron riesgos.')}</div>
-            <div style="margin-top:8px"><strong>Confianza:</strong> ${a.confidence} · <strong>Puntaje:</strong> ${a.total}</div>
-            <div style="margin-top:12px;color:#0b3b2a"><em>Acción recomendada:</em> ${escapeHTML(a.recommendedAction || '')}</div>
+
+      const a=s.audit;
+
+      box.innerHTML=`
+        <div class="result-box ${a.color}">
+          <div class="section-title">
+            <h2>Resultado · Fuente #${app.current+1}</h2>
+            <span class="badge ${a.color}">${a.icon} ${a.label}</span>
           </div>
+
+          ${scoreRows(a)}
+
+          <p class="total">TOTAL: ${a.total}/100</p>
+
+          <h3>Hallazgo principal</h3>
+          <div class="finding">${escapeHTML(a.mainFinding)}</div>
+
+          <h3>Riesgo detectado</h3>
+          <div class="finding">${escapeHTML(a.risk)}</div>
+
+          <div class="grid">
+            <div>
+              <strong>Fuente primaria</strong>
+              <p>${escapeHTML(s.primarySource||"No identificada")}</p>
+            </div>
+
+            <div>
+              <strong>Perma Link</strong>
+              <p>${
+                s.permaLink
+                  ?`<a href="${escapeHTML(s.permaLink)}" target="_blank" rel="noopener">${escapeHTML(s.permaLink)}</a>`
+                  :"No aportado"
+              }</p>
+            </div>
+
+            <div>
+              <strong>Evidencia que respalda</strong>
+              <p>${escapeHTML(s.evidenceSupport||"No aportada")}</p>
+            </div>
+
+            <div>
+              <strong>Evidencia que contradice</strong>
+              <p>${escapeHTML(s.evidenceAgainst||"No aportada")}</p>
+            </div>
+
+            <div>
+              <strong>Vacíos de evidencia</strong>
+              <p>${escapeHTML(s.gaps||"No registrados")}</p>
+            </div>
+
+            <div>
+              <strong>Recomendación</strong>
+              <p>${escapeHTML(s.recommendation||"Continuar la investigación y documentar los vacíos.")}</p>
+            </div>
+          </div>
+
+          <p>
+            <strong>Nivel de confianza:</strong> ${a.confidence}
+            ·
+            <strong>ID:</strong> ${a.auditId}
+          </p>
         </div>
       `;
     }
 
-    // Placeholder functions (si ya existen en el original no se duplican): runFixtures, exportCSV, exportJSON, closeAuditAndSend
-    function runFixtures(){
-      const results = [];
-      // simple fixtures: A - D (simulacros)
-      // Fixture A: sin datos -> no verificable
-      const a = emptySource(); a.title='Fixture A'; a.claim='Afirmación A'; a.audit = auditSource(a);
-      results.push({id:'A',res:a.audit});
-      // Fixture B: primary missing but evidence -> útil con reservas
-      const b = emptySource(); b.title='Fixture B'; b.claim='B'; b.evidenceSupport='Soporte'; b.audit=auditSource(b); results.push({id:'B',res:b.audit});
-      // Fixture C: primary present and good methodology -> sustentada
-      const c = emptySource(); c.title='Fixture C'; c.claim='C'; c.primarySource='Estudio'; c.primaryUrl='https://x.org'; c.methodology='descr'; c.methodologyAdequate='yes'; c.methodologyChecks=['population','sample']; c.audit=auditSource(c); results.push({id:'C',res:c.audit});
-      // Fixture D: contradicted
-      const d = emptySource(); d.title='Fixture D'; d.claim='D'; d.primarySource='Estudio'; d.primaryUrl='https://x.org'; d.contradicted='yes'; d.audit=auditSource(d); results.push({id:'D',res:d.audit});
+    function renderAll(){
+      renderGlobal();
+      renderMatrix();
+      renderCritical();
+      renderSingleResult();
+    }
 
-      const el = document.getElementById('testResults');
-      if(el){
-        el.classList.remove('empty');
-        el.innerHTML = results.map(r=>`<div><strong>${r.id}:</strong> ${r.res.shortLabel} (${r.res.total})</div>`).join('');
+    function audited(){
+      return app.sources.filter(s=>s.audit);
+    }
+
+    function percent(n,d){
+      return d?Math.round(n/d*100):0;
+    }
+
+    function renderGlobal(){
+      const list=audited();
+      const n=list.length;
+      const count=color=>list.filter(s=>s.audit.color===color).length;
+      const avg=n
+        ?Math.round(list.reduce((a,s)=>a+s.audit.total,0)/n)
+        :0;
+
+      const hallucinations=
+        list.filter(s=>s.audit.possibleHallucination).length;
+
+      const permaCount=
+        list.filter(s=>s.permaLink).length;
+
+      document.getElementById("globalStats").innerHTML=[
+        ["Fuentes auditadas",n],
+        ["Sustentadas",count("green")],
+        ["Con reservas",count("yellow")],
+        ["No utilizables",count("red")],
+        ["No verificables",count("black")],
+        ["Promedio",avg+"/100"],
+        ["Posibles alucinaciones",hallucinations],
+        ["Fuentes con Perma.cc",permaCount]
+      ].map(item=>
+        `<div class="stat">
+          <strong>${item[1]}</strong>
+          <span>${item[0]}</span>
+        </div>`
+      ).join("");
+
+      const criteria=[
+        ["Metodología","methodology"],
+        ["Triangulación","triangulation"],
+        ["Autoría y sesgos","authorship"],
+        ["Ética y transparencia","ethics"],
+        ["Verosimilitud","verisimilitude"]
+      ];
+
+      document.getElementById("criterionDashboard").innerHTML=
+        criteria.map(([label,key])=>{
+          const value=n
+            ?Math.round(
+              list.reduce((sum,s)=>sum+s.audit.scores[key],0)/n
+            )
+            :0;
+
+          return `
+            <div class="score-row">
+              <span>${label}</span>
+              <div class="bar">
+                <span style="width:${value*5}%"></span>
+              </div>
+              <strong>${value}/20</strong>
+            </div>
+          `;
+        }).join("");
+
+      document.getElementById("comparisonTable").innerHTML=`
+        <thead>
+          <tr>
+            <th>Fuente</th>
+            <th>Título</th>
+            <th>Met.</th>
+            <th>Triang.</th>
+            <th>Autoría</th>
+            <th>Ética</th>
+            <th>Veros.</th>
+            <th>Total</th>
+            <th>Clasificación</th>
+            <th>Posible alucinación</th>
+            <th>Perma.cc</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${app.sources.map((s,i)=>`
+            <tr>
+              <td><strong>Fuente:</strong> #${i+1}</td>
+              <td><strong>Título:</strong> ${escapeHTML(clip(s.title,55))}</td>
+              <td><strong>Metodología:</strong> ${s.audit?s.audit.scores.methodology+"/20":"—"}</td>
+              <td><strong>Triangulación:</strong> ${s.audit?s.audit.scores.triangulation+"/20":"—"}</td>
+              <td><strong>Autoría:</strong> ${s.audit?s.audit.scores.authorship+"/20":"—"}</td>
+              <td><strong>Ética:</strong> ${s.audit?s.audit.scores.ethics+"/20":"—"}</td>
+              <td><strong>Verosimilitud:</strong> ${s.audit?s.audit.scores.verisimilitude+"/20":"—"}</td>
+              <td><strong>Total:</strong> ${s.audit?s.audit.total+"/100":"—"}</td>
+              <td>
+                <strong>Clasificación:</strong>
+                ${
+                  s.audit
+                    ?`<span class="badge ${s.audit.color}">${s.audit.icon} ${s.audit.shortLabel}</span>`
+                    :"Sin auditar"
+                }
+              </td>
+              <td>
+                <strong>Posible alucinación:</strong>
+                ${s.audit?(s.audit.possibleHallucination?"⚠ Sí":"No"):"—"}
+              </td>
+              <td>
+                <strong>Perma.cc:</strong>
+                ${s.permaLink?"✓ Sí":"No"}
+              </td>
+            </tr>
+          `).join("")}
+        </tbody>
+      `;
+
+      const indicators=[
+        ["Fuentes con metodología",percent(list.filter(s=>s.methodology).length,n)],
+        ["Con fuente primaria completa",percent(list.filter(s=>s.primarySource&&s.primaryUrl).length,n)],
+        ["Con triangulación independiente",percent(list.filter(s=>s.independentTriangulation==="yes").length,n)],
+        ["Con referencias trazables",percent(list.filter(s=>s.url&&s.primaryUrl).length,n)],
+        ["Con Perma.cc",percent(permaCount,n)]
+      ];
+
+      document.getElementById("traceability").innerHTML=
+        indicators.map(([label,value])=>`
+          <div class="score-row">
+            <span>${label}</span>
+            <div class="bar">
+              <span style="width:${value}%"></span>
+            </div>
+            <strong>${value}%</strong>
+          </div>
+        `).join("");
+
+      const criticalItems=[];
+
+      app.sources.forEach((s,i)=>{
+        if(!s.audit) return;
+
+        s.audit.risk
+          .split(". ")
+          .filter(Boolean)
+          .forEach(risk=>{
+            criticalItems.push({
+              i,
+              r:risk.replace(/\.$/,"")
+            });
+          });
+      });
+
+      document.getElementById("dashboardCriticalCount").textContent=
+        criticalItems.length+" riesgos";
+
+      document.getElementById("dashboardCriticalList").innerHTML=
+        criticalItems.length
+          ?criticalItems.map(item=>`
+            <div class="critical-item">
+              <strong>Fuente #${item.i+1}</strong>
+              <p>${escapeHTML(item.r)}.</p>
+            </div>
+          `).join("")
+          :`<div class="empty">Audita las fuentes para generar el dashboard de hallazgos críticos.</div>`;
+    }
+
+    function renderMatrix(){
+      document.getElementById("matrixTable").innerHTML=`
+        <thead>
+          <tr>
+            <th>Fuente</th>
+            <th>Afirmación</th>
+            <th>Evidencia utilizada</th>
+            <th>Fuente primaria</th>
+            <th>Fecha</th>
+            <th>URL</th>
+            <th>Perma Link</th>
+            <th>Confianza</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${app.sources.map((s,i)=>`
+            <tr>
+              <td>
+                <strong>Fuente:</strong>
+                #${i+1}<br>
+                ${escapeHTML(clip(s.title,35))}
+              </td>
+              <td class="matrix-cell">
+                <strong>Afirmación:</strong><br>
+                ${escapeHTML(s.claim||"—")}
+              </td>
+              <td class="matrix-cell">
+                <strong>Respalda:</strong>
+                ${escapeHTML(s.evidenceSupport||"—")}
+                <br><br>
+                <strong>Contradice:</strong>
+                ${escapeHTML(s.evidenceAgainst||"—")}
+              </td>
+              <td class="matrix-cell">
+                <strong>Fuente primaria:</strong><br>
+                ${escapeHTML(s.primarySource||"No identificada")}
+              </td>
+              <td>
+                <strong>Fecha:</strong><br>
+                ${escapeHTML(s.date||"—")}
+              </td>
+              <td>
+                <strong>URL:</strong><br>
+                ${
+                  s.url
+                    ?`<a href="${escapeHTML(s.url)}" target="_blank" rel="noopener">Abrir</a>`
+                    :"—"
+                }
+              </td>
+              <td>
+                <strong>Perma Link:</strong><br>
+                ${
+                  s.permaLink
+                    ?`<a href="${escapeHTML(s.permaLink)}" target="_blank" rel="noopener">Perma.cc</a>`
+                    :"—"
+                }
+              </td>
+              <td>
+                <strong>Confianza:</strong><br>
+                ${s.audit?s.audit.confidence:"Sin auditar"}
+              </td>
+            </tr>
+          `).join("")}
+        </tbody>
+      `;
+    }
+
+    function renderCritical(){
+      const items=[];
+
+      app.sources.forEach((s,i)=>{
+        if(!s.audit) return;
+
+        s.audit.risk
+          .split(". ")
+          .filter(Boolean)
+          .forEach(risk=>{
+            items.push({
+              i,
+              r:risk.replace(/\.$/,"")
+            });
+          });
+      });
+
+      document.getElementById("criticalCount").textContent=
+        items.length+" riesgos";
+
+      document.getElementById("criticalList").innerHTML=
+        items.length
+          ?items.map(item=>`
+            <div class="critical-item">
+              <strong>Fuente #${item.i+1}</strong>
+              <p>${escapeHTML(item.r)}.</p>
+            </div>
+          `).join("")
+          :`<div class="empty">Audita las fuentes para identificar riesgos y bloqueos.</div>`;
+    }
+
+    function showView(name){
+      if(name!=="audit"){
+        collectForm();
+      }
+
+      document.querySelectorAll(".view").forEach(view=>{
+        view.classList.toggle("active",view.id==="view-"+name);
+      });
+
+      document.querySelectorAll(".nav-button").forEach(button=>{
+        button.classList.toggle("active",button.dataset.view===name);
+      });
+
+      renderAll();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    function toggleTimer(){
+      timerRunning=!timerRunning;
+
+      if(timerRunning){
+        timerInterval=setInterval(()=>{
+          timerSeconds=Math.max(0,timerSeconds-1);
+          renderTimer();
+
+          if(timerSeconds===0){
+            clearInterval(timerInterval);
+            timerRunning=false;
+            alert("Terminó la sesión de 50 minutos. Revisen y discutan sus conclusiones.");
+          }
+        },1000);
+      }else{
+        clearInterval(timerInterval);
+      }
+
+      renderTimer();
+    }
+
+    function renderTimer(){
+      const minutes=String(Math.floor(timerSeconds/60)).padStart(2,"0");
+      const seconds=String(timerSeconds%60).padStart(2,"0");
+
+      document.getElementById("timer").textContent=
+        `${minutes}:${seconds} ${timerRunning?"Ⅱ":"▶"}`;
+    }
+
+    function recordsForExport(){
+      return audited().map((s,i)=>({
+        ...s,
+        sourceNumber:i+1,
+        auditId:s.audit.auditId
+      }));
+    }
+
+    async function closeAuditAndSend(){
+      collectForm();
+
+      const sourcesWithData=app.sources.filter(
+        s=>s.title||s.claim||s.url
+      );
+
+      if(!sourcesWithData.length){
+        alert("Aún no hay fuentes con datos para cerrar la auditoría.");
+        return;
+      }
+
+      app.sources.forEach(s=>{
+        if(s.title||s.claim||s.url){
+          s.audit=auditSource(s);
+        }
+      });
+
+      persist();
+      renderAll();
+      renderPicker();
+      showView("results");
+
+      await sendResults(true);
+    }
+
+    async function sendResults(isClosing=false){
+      collectForm();
+
+      const endpoint=
+        localStorage.getItem("auditorEndpoint")||DEFAULT_ENDPOINT;
+
+      const records=recordsForExport();
+
+      if(!records.length){
+        alert("No hay resultados auditados.");
+        return false;
+      }
+
+      const status=document.getElementById("syncStatus");
+      status.textContent="Enviando Matriz…";
+
+      try{
+        await fetch(endpoint,{
+          method:"POST",
+          headers:{
+            "Content-Type":"text/plain;charset=utf-8"
+          },
+          body:JSON.stringify({records})
+        });
+
+        status.textContent=
+          "Auditoría cerrada y Matriz enviada a Google Sheets";
+
+        if(isClosing){
+          alert("Auditoría cerrada. La Matriz fue enviada y el Dashboard se generó automáticamente.");
+        }else{
+          alert("Envío completado. Verifica la hoja “Resultados”.");
+        }
+
+        return true;
+      }catch(error){
+        status.textContent="No se pudo completar el envío";
+        alert("Error de conexión. Revisa el despliegue y los permisos de Apps Script.");
+        return false;
       }
     }
 
-    function exportCSV(){
-      // export minimal CSV of audits
-      const rows = [['index','title','label','total','confidence','risk']];
-      app.sources.forEach((s,i)=>{
-        if(s.audit) rows.push([i+1, (s.title||s.claim||''), s.audit.label, s.audit.total, s.audit.confidence, '"'+(s.audit.riskSummary||'')+'"']);
-      });
-      const csv = rows.map(r=>r.join(',')).join('\n');
-      const blob = new Blob([csv],{type:'text/csv'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href=url; a.download='audits.csv'; a.click(); URL.revokeObjectURL(url);
+    function flattenRecord(s,i){
+      return {
+        auditoria_id:s.audit?.auditId||"",
+        fuente_numero:i+1,
+        codigo_celula:s.cellCode,
+        integrantes:s.members,
+        sector:s.sector,
+        tema:s.topic,
+        titulo:s.title,
+        fuente:s.source,
+        url:s.url,
+        autor:s.author,
+        institucion:s.institution,
+        fecha:s.date,
+        afirmacion:s.claim,
+        evidencia_respalda:s.evidenceSupport,
+        evidencia_contradice:s.evidenceAgainst,
+        fuente_primaria:s.primarySource,
+        url_primaria:s.primaryUrl,
+        triangulacion:s.triangulationSources,
+        perma_link:s.permaLink,
+        metodologia:s.methodology,
+        total:s.audit?.total||"",
+        clasificacion:s.audit?.label||"",
+        riesgo:s.audit?.risk||"",
+        confianza:s.audit?.confidence||""
+      };
+    }
+
+    function download(name,text,type){
+      const link=document.createElement("a");
+      link.href=URL.createObjectURL(new Blob([text],{type}));
+      link.download=name;
+      link.click();
+      URL.revokeObjectURL(link.href);
     }
 
     function exportJSON(){
-      const data = {sources:app.sources};
-      const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href=url; a.download='audits.json'; a.click(); URL.revokeObjectURL(url);
+      download(
+        "auditor-evidencia.json",
+        JSON.stringify(app,null,2),
+        "application/json"
+      );
     }
 
-    function closeAuditAndSend(){
-      // simple behavior: open matrix view
-      renderAll();
-      showView('matrix');
-      alert('Auditoría cerrada localmente. Revisa la Matriz antes de enviar.');
+    function exportCSV(){
+      collectForm();
+
+      const rows=app.sources.map(flattenRecord);
+      const headers=Object.keys(rows[0]);
+      const quote=value=>
+        `"${String(value??"").replaceAll('"','""')}"`;
+
+      download(
+        "matriz-evidencia.csv",
+        "\uFEFF"+[
+          headers.join(","),
+          ...rows.map(row=>
+            headers.map(header=>quote(row[header])).join(",")
+          )
+        ].join("\n"),
+        "text/csv;charset=utf-8"
+      );
     }
 
-    // Inicializar
-    document.addEventListener('DOMContentLoaded',init);
+    init();
   </script>
 </body>
 </html>
