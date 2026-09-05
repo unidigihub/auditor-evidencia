@@ -1567,7 +1567,355 @@
         "text/csv;charset=utf-8"
       );
     }
+    // ============================================================
+    // PRUEBAS AUTOMÁTICAS A–D DEL AUDITOR
+    // ============================================================
 
+    function runFixtures(){
+
+      const results = [];
+
+      // ------------------------------------------------------------
+      // Función auxiliar para crear una fuente de prueba
+      // ------------------------------------------------------------
+      function makeTestSource(){
+        return {
+          gender: "",
+          sector: "",
+          topic: "Prueba de auditoría",
+          title: "Fuente de prueba",
+          source: "Institución de prueba",
+          url: "https://example.com/fuente",
+          author: "Autor de prueba",
+          institution: "Institución de prueba",
+          date: "2026-09-04",
+
+          centralFigure: "no",
+
+          claim: "La afirmación de prueba está respaldada por evidencia.",
+          evidenceSupport: "La fuente presenta evidencia que respalda la afirmación.",
+          evidenceAgainst: "",
+
+          primarySource: "Documento primario de prueba",
+          primaryUrl: "https://example.com/fuente-primaria",
+
+          triangulationSources:
+            "Fuente secundaria independiente de prueba",
+
+          independentTriangulation: "yes",
+
+          permaLink:
+            "https://perma.cc/ejemplo",
+
+          methodology:
+            "La metodología utilizada por la fuente está descrita y puede ser revisada.",
+
+          methodologyChecks: [
+            "Diseño metodológico identificado",
+            "Método descrito",
+            "Datos identificables",
+            "Procedimiento explicable"
+          ],
+
+          methodologyAdequate: "yes",
+
+          context:
+            "La fuente proporciona contexto suficiente para interpretar la información.",
+
+          interests:
+            "No se identifican intereses relevantes que comprometan la información.",
+
+          transparencyChecks: [
+            "Fuente identificable",
+            "Fecha identificable",
+            "Datos consultables",
+            "Proceso transparente"
+          ],
+
+          verisimilitude:
+            "La afirmación resulta coherente con la evidencia presentada.",
+
+          verisimilitudeChecks: [
+            "La evidencia es coherente con la afirmación",
+            "No se observan contradicciones relevantes",
+            "Los datos son plausibles",
+            "La explicación es consistente"
+          ],
+
+          nonexistentReference: "no",
+          contradicted: "no",
+          hallucinationEvidence: "",
+          gaps: "",
+          cellDecision: "",
+          recommendation: "",
+
+          audit: null
+        };
+      }
+
+
+      // ------------------------------------------------------------
+      // A — CASO POSITIVO
+      // Una fuente completa y bien sustentada debe quedar VERDE.
+      // ------------------------------------------------------------
+      try {
+
+        const sourceA = makeTestSource();
+
+        const auditA = auditSource(sourceA);
+
+        const passedA =
+          auditA.color === "green" &&
+          auditA.shortLabel === "Sustentada" &&
+          auditA.total >= 80 &&
+          auditA.possibleHallucination === false &&
+          auditA.preservationIncomplete === false;
+
+        results.push({
+          test: "A",
+          name: "Fuente completa y sustentada",
+          passed: passedA,
+          expected: "Sustentada / verde",
+          obtained:
+            auditA.shortLabel +
+            " / " +
+            auditA.total +
+            "/100"
+        });
+
+      } catch(error){
+
+        results.push({
+          test: "A",
+          name: "Fuente completa y sustentada",
+          passed: false,
+          expected: "Sustentada / verde",
+          obtained: "ERROR: " + error.message
+        });
+
+      }
+
+
+      // ------------------------------------------------------------
+      // B — SIN FUENTE PRIMARIA
+      // Aunque tenga evidencia y triangulación, la ausencia de
+      // fuente primaria debe impedir la clasificación como sustentada.
+      // ------------------------------------------------------------
+      try {
+
+        const sourceB = makeTestSource();
+
+        sourceB.primarySource = "";
+        sourceB.primaryUrl = "";
+
+        const auditB = auditSource(sourceB);
+
+        const passedB =
+          auditB.shortLabel !== "Sustentada" &&
+          auditB.color !== "green" &&
+          auditB.risk.includes(
+            "No se identificó una fuente primaria completa."
+          );
+
+        results.push({
+          test: "B",
+          name: "Ausencia de fuente primaria",
+          passed: passedB,
+          expected: "No debe quedar Sustentada",
+          obtained:
+            auditB.shortLabel +
+            " / " +
+            auditB.total +
+            "/100"
+        });
+
+      } catch(error){
+
+        results.push({
+          test: "B",
+          name: "Ausencia de fuente primaria",
+          passed: false,
+          expected: "No debe quedar Sustentada",
+          obtained: "ERROR: " + error.message
+        });
+
+      }
+
+
+      // ------------------------------------------------------------
+      // C — POSIBLE ALUCINACIÓN
+      // Si se comprueba que una referencia es inexistente o fabricada,
+      // el auditor debe bloquearla como NO UTILIZABLE.
+      // ------------------------------------------------------------
+      try {
+
+        const sourceC = makeTestSource();
+
+        sourceC.nonexistentReference = "yes";
+        sourceC.hallucinationEvidence =
+          "La referencia fue comprobada como inexistente.";
+
+        const auditC = auditSource(sourceC);
+
+        const passedC =
+          auditC.color === "red" &&
+          auditC.shortLabel === "No utilizable" &&
+          auditC.possibleHallucination === true &&
+          auditC.risk.includes("POSIBLE ALUCINACIÓN");
+
+        results.push({
+          test: "C",
+          name: "Referencia inexistente / posible alucinación",
+          passed: passedC,
+          expected: "No utilizable / rojo",
+          obtained:
+            auditC.shortLabel +
+            " / " +
+            auditC.total +
+            "/100"
+        });
+
+      } catch(error){
+
+        results.push({
+          test: "C",
+          name: "Referencia inexistente / posible alucinación",
+          passed: false,
+          expected: "No utilizable / rojo",
+          obtained: "ERROR: " + error.message
+        });
+
+      }
+
+
+      // ------------------------------------------------------------
+      // D — PUBLICACIONES DE LA MISMA FUENTE
+      // El auditor debe detectar que no existe triangulación
+      // independiente cuando las publicaciones dependen de la misma
+      // fuente.
+      // ------------------------------------------------------------
+      try {
+
+        const sourceD = makeTestSource();
+
+        sourceD.independentTriangulation = "same";
+
+        const auditD = auditSource(sourceD);
+
+        const passedD =
+          auditD.scores.triangulation === 13 &&
+          auditD.risk.includes(
+            "Las publicaciones dependen de la misma fuente."
+          ) &&
+          auditD.risk.includes(
+            "No se confirmó triangulación independiente."
+          );
+
+        results.push({
+          test: "D",
+          name: "Publicaciones de la misma fuente",
+          passed: passedD,
+          expected: "Triangulación = 13/20 y riesgo detectado",
+          obtained:
+            "Triangulación " +
+            auditD.scores.triangulation +
+            "/20"
+        });
+
+      } catch(error){
+
+        results.push({
+          test: "D",
+          name: "Publicaciones de la misma fuente",
+          passed: false,
+          expected: "Triangulación = 13/20 y riesgo detectado",
+          obtained: "ERROR: " + error.message
+        });
+
+      }
+
+
+      // ------------------------------------------------------------
+      // MOSTRAR RESULTADOS
+      // ------------------------------------------------------------
+
+      const totalTests = results.length;
+      const passedTests = results.filter(r => r.passed).length;
+      const failedTests = totalTests - passedTests;
+
+      console.group("AUDITOR DE EVIDENCIA — PRUEBAS A–D");
+
+      results.forEach(r => {
+        if(r.passed){
+          console.log(
+            "✅ " +
+            r.test +
+            " — " +
+            r.name +
+            " | " +
+            r.obtained
+          );
+        }else{
+          console.error(
+            "❌ " +
+            r.test +
+            " — " +
+            r.name +
+            " | Esperado: " +
+            r.expected +
+            " | Obtenido: " +
+            r.obtained
+          );
+        }
+      });
+
+      console.log(
+        "Resultado final: " +
+        passedTests +
+        "/" +
+        totalTests +
+        " pruebas superadas."
+      );
+
+      console.groupEnd();
+
+
+      // Mensaje visible para el usuario
+      if(failedTests === 0){
+
+        alert(
+          "✅ PRUEBAS A–D SUPERADAS\n\n" +
+          "Todas las pruebas del auditor funcionan correctamente.\n\n" +
+          "A — Fuente sustentada: OK\n" +
+          "B — Sin fuente primaria: OK\n" +
+          "C — Posible alucinación: OK\n" +
+          "D — Misma fuente: OK\n\n" +
+          passedTests +
+          "/" +
+          totalTests +
+          " pruebas superadas."
+        );
+
+      }else{
+
+        alert(
+          "⚠️ HAY PRUEBAS QUE DEBEN REVISARSE\n\n" +
+          "Superadas: " +
+          passedTests +
+          "/" +
+          totalTests +
+          "\n" +
+          "Fallidas: " +
+          failedTests +
+          "\n\n" +
+          "Abre la consola del navegador (F12) " +
+          "para ver el detalle."
+        );
+
+      }
+
+      return results;
+    }
     init();
   </script>
 </body>
