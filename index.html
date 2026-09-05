@@ -1505,29 +1505,33 @@
 
     function flattenRecord(s,i){
       return {
-        auditoria_id:s.audit?.auditId||"",
-        fuente_numero:i+1,
-        sector:s.sector,
-        tema:s.topic,
-        titulo:s.title,
-        fuente:s.source,
-        url:s.url,
-        autor:s.author,
-        institucion:s.institution,
-        fecha:s.date,
-        afirmacion:s.claim,
-        evidencia_respalda:s.evidenceSupport,
-        evidencia_contradice:s.evidenceAgainst,
-        fuente_primaria:s.primarySource,
-        url_primaria:s.primaryUrl,
-        triangulacion:s.triangulationSources,
-        perma_link:s.permaLink,
-        metodologia:s.methodology,
-        total:s.audit?.total||"",
-        clasificacion:s.audit?.label||"",
-        riesgo:s.audit?.risk||"",
-        confianza:s.audit?.confidence||""
-      };
+  auditoria_id: s.audit?.auditId || "",
+  fuente_numero: i + 1,
+  nombre_completo: s.personName,
+  identificacion_email: s.personId,
+  edad: s.age,
+  genero: s.gender,
+  sector: s.sector,
+  tema: s.topic,
+  titulo: s.title,
+  fuente: s.source,
+  url: s.url,
+  autor: s.author,
+  institucion: s.institution,
+  fecha: s.date,
+  afirmacion: s.claim,
+  evidencia_respalda: s.evidenceSupport,
+  evidencia_contradice: s.evidenceAgainst,
+  fuente_primaria: s.primarySource,
+  url_primaria: s.primaryUrl,
+  triangulacion: s.triangulationSources,
+  perma_link: s.permaLink,
+  metodologia: s.methodology,
+  total: s.audit?.total || "",
+  clasificacion: s.audit?.label || "",
+  riesgo: s.audit?.risk || "",
+  confianza: s.audit?.confidence || ""
+};
     }
 
     function download(name,text,type){
