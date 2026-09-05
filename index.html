@@ -216,11 +216,11 @@
   <div class="layout">
     <aside class="sidebar">
       <nav class="nav-list" aria-label="Navegación principal">
-        <button class="nav-button active" data-view="audit">📝 Auditar fuentes</button>
-        <button class="nav-button" data-view="results">📊 Resultados de la célula</button>
-        <button class="nav-button" data-view="matrix">▦ Matriz de Evidencia</button>
-        <button class="nav-button" data-view="critical">⚠ Hallazgos críticos</button>
         <button class="nav-button" data-view="instructions">ⓘ Instrucciones</button>
+        <button class="nav-button active" data-view="audit">📝 Auditar fuentes</button>
+        <button class="nav-button" data-view="results">📊 Resultados de la auditoria</button>
+        <button class="nav-button" data-view="matrix">▦ Matriz de Evidencia</button>
+        <button class="nav-button" data-view="critical">⚠ Hallazgos críticos</button>  
       </nav>
 
       <div class="source-picker" id="sourcePicker" aria-label="Seleccionar fuente"></div>
@@ -247,26 +247,64 @@
         <form id="auditForm" autocomplete="off">
           <div class="card">
             <div class="section-title">
-              <h2 id="sourceHeading">Fuente #1</h2>
+              <h2 id="sourceHeading">Datos del auditor</h2>
               <span class="badge black" id="sourceStatus">Sin auditar</span>
             </div>
 
             <div class="grid">
               <div class="field">
-                <label>Código de célula *</label>
-                <input name="cellCode" required placeholder="Ej. CEL-04">
+                <label>Nombre completo *</label>
+                <input name="personName" required placeholder="Ej. María Pérez">
               </div>
               <div class="field">
-                <label>Integrantes *</label>
-                <input name="members" required placeholder="Nombres separados por coma">
+                <label>Identificación (ID / email) *</label>
+                <input name="personId" required placeholder="Ej. 12345678 / maria@dominio.com">
+              </div>
+              <div class="field">
+                <label>Edad</label>
+                <input name="age" type="number" min="0" placeholder="Ej. 34">
+              </div>
+              <div class="field">
+                <label>Género</label>
+                <select name="gender">
+                  <option value="">No especificar</option>
+                  <option>Femenino</option>
+                  <option>Masculino</option>
+                  <option>No binario</option>
+                  <option>Prefiero no decir</option>
+                </select>
               </div>
               <div class="field">
                 <label>Sector</label>
-                <input name="sector" placeholder="Educación, salud, tecnología…">
+                <select name="sector">
+                  <option value="">Selecciona sector</option>
+                  <option>Educación</option>
+                  <option>Salud</option>
+                  <option>Tecnología</option>
+                  <option>Finanzas</option>
+                  <option>Gobierno / Público</option>
+                  <option>Medio ambiente</option>
+                  <option>Transporte</option>
+                  <option>Energía</option>
+                  <option>Agricultura</option>
+                  <option>Comercio</option>
+                </select>
               </div>
               <div class="field">
                 <label>Tema</label>
-                <input name="topic" placeholder="Tema investigado">
+                <select name="topic">
+                  <option value="">Selecciona tema</option>
+                  <option>Política pública</option>
+                  <option>Salud pública</option>
+                  <option>Educación</option>
+                  <option>Economía</option>
+                  <option>Tecnología e innovación</option>
+                  <option>Cambio climático</option>
+                  <option>Seguridad</option>
+                  <option>Infraestructura</option>
+                  <option>Cultura y medios</option>
+                  <option>Derechos humanos</option>
+                </select>
               </div>
             </div>
           </div>
@@ -606,10 +644,12 @@
     const DEFAULT_ENDPOINT = "https://script.google.com/macros/s/AKfycbzGLfesjxcEr5XDBhTdm_y4lxssTfuQUluBMeZv7hPVMZojcnvGLSW16v4jY7REPdr3BQ/exec";
 
     const emptySource = () => ({
-      cellCode:"",
-      members:"",
-      sector:"",
-      topic:"",
+      personName: "",
+      personId: "",
+      age: "",
+      gender: "",
+      sector: "",
+      topic: "",
       title:"",
       source:"",
       url:"",
