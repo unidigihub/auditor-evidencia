@@ -1434,7 +1434,7 @@
         auditId:s.audit.auditId
       }));
     }
-
+const DEFAULT_ENDPOINT = "https://script.google.com/macros/s/AKfycbwjCMvROz9vdeFaTB5Ftl_hIVQ8OR8Fpzc35TaAmcXwGvDXbmXl1Y0cZ25nJ9et8szZig/exec";
     async function closeAuditAndSend(){
       collectForm();
 
@@ -1461,54 +1461,52 @@
       await sendResults(true);
     }
 
-    async function sendResults(isClosing=false){
-      collectForm();
+  async function sendResults(isClosing=false){
+  collectForm();
 
-      const endpoint=
-        localStorage.getItem("auditorEndpoint")||DEFAULT_ENDPOINT;
+  const endpoint =
+    localStorage.getItem("auditorEndpoint") || DEFAULT_ENDPOINT;
 
-      const records=recordsForExport();
+  const records=recordsForExport();
 
-      if(!records.length){
-        alert("No hay resultados auditados.");
-        return false;
-      }
+  if(!records.length){
+    alert("No hay resultados auditados.");
+    return false;
+  }
 
-      const status=document.getElementById("syncStatus");
-      status.textContent="Enviando Matriz…";
+  const status=document.getElementById("syncStatus");
+  status.textContent="Enviando Matriz…";
 
-      try{
-        await fetch(endpoint,{
-          method:"POST",
-          headers:{
-            "Content-Type":"text/plain;charset=utf-8"
-          },
-          body:JSON.stringify({records})
-        });
+  try{
+    await fetch(endpoint,{
+      method:"POST",
+      headers:{
+        "Content-Type":"text/plain;charset=utf-8"
+      },
+      body:JSON.stringify({records})
+    });
 
-        status.textContent=
-          "Auditoría cerrada y Matriz enviada a Google Sheets";
+    status.textContent=
+      "Auditoría cerrada y Matriz enviada a Google Sheets";
 
-        if(isClosing){
-          alert("Auditoría cerrada. La Matriz fue enviada y el Dashboard se generó automáticamente.");
-        }else{
-          alert("Envío completado. Verifica la hoja “Resultados”.");
-        }
-
-        return true;
-      }catch(error){
-        status.textContent="No se pudo completar el envío";
-        alert("Error de conexión. Revisa el despliegue y los permisos de Apps Script.");
-        return false;
-      }
+    if(isClosing){
+      alert("Auditoría cerrada. La Matriz fue enviada y el Dashboard se generó automáticamente.");
+    }else{
+      alert("Envío completado. Verifica la hoja “Resultados”.");
     }
+
+    return true;
+  }catch(error){
+    status.textContent="No se pudo completar el envío";
+    alert("Error de conexión. Revisa el despliegue y los permisos de Apps Script.");
+    return false;
+  }
+}
 
     function flattenRecord(s,i){
       return {
         auditoria_id:s.audit?.auditId||"",
         fuente_numero:i+1,
-        codigo_celula:s.cellCode,
-        integrantes:s.members,
         sector:s.sector,
         tema:s.topic,
         titulo:s.title,
