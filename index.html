@@ -2112,6 +2112,7 @@ function cargarBitacora(){
   document.getElementById("bitDominiosIA").value = b.dominiosIA || "";
   document.getElementById("bitCadena").value = b.cadena;
   document.getElementById("bitDominios").value = b.dominios;
+  document.getElementById("bitVerificado").checked = !!b.verificado;
   document.getElementById("bitAprendizajes").value = b.aprendizajes;
   mostrarMensajeBitacora("", "");
 
@@ -2182,7 +2183,17 @@ function validarReglaEco(datos){
 
   return null;
 }
-    
+
+// Verificación manual: el sistema solo puede validar la sintaxis de
+// la cadena de búsqueda, nunca si el dominio es realmente institucional.
+// Esa comprobación depende del criterio del propio estudiante.
+function validarVerificacionManual(datos){
+  if(datos.cadena.trim().length > 0 && !datos.verificado){
+    return "Verificación pendiente: antes de guardar, confirma la casilla que dice que revisaste manualmente que el dominio es institucional. El sistema no puede comprobar esto por ti.";
+  }
+  return null;
+}
+   
 function guardarBitacora(datos){
   app.bitacoras[app.current] = { ...datos, validada: true };
   persist();
@@ -2198,15 +2209,16 @@ function initBitacora(){
   form.addEventListener("submit", e => {
     e.preventDefault();
 
-        const datos = {
+          const datos = {
       prompt: document.getElementById("bitPrompt").value,
       vocabulario: document.getElementById("bitVocabulario").value,
       dominiosIA: document.getElementById("bitDominiosIA").value,
       cadena: document.getElementById("bitCadena").value,
       dominios: document.getElementById("bitDominios").value,
+      verificado: document.getElementById("bitVerificado").checked,
       aprendizajes: document.getElementById("bitAprendizajes").value
     };
-    
+
     const errorBunge = validarReglaBunge(datos);
     if(errorBunge){
       alert(errorBunge);
@@ -2221,7 +2233,15 @@ function initBitacora(){
       return;
     }
 
-        guardarBitacora(datos);
+    const errorVerificacion = validarVerificacionManual(datos);
+    if(errorVerificacion){
+      alert(errorVerificacion);
+      mostrarMensajeBitacora(errorVerificacion, "error");
+      return;
+    }
+
+    guardarBitacora(datos);
+    
     mostrarMensajeBitacora("Bitácora guardada correctamente. Ya puedes continuar con la auditoría de tu fuente.", "ok");
     renderPicker();
     showView("audit");
