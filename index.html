@@ -610,37 +610,47 @@
         </div>
       </section>
 
-     <section class="view active" id="view-instructions">
-        <div class="card">
-          <h2>¿Cómo usar la aplicación?</h2>
-          <ol>
-            <li><strong>Selecciona</strong> una de las cinco fuentes a evaluar.</li>
-            <li><strong>Registra</strong> la afirmación exacta y rastrea su fuente primaria.</li>
-            <li><strong>Contrasta</strong> la información buscando fuentes realmente independientes.</li>
-            <li><strong>Marca</strong> únicamente los criterios que hayas comprobado empíricamente.</li>
-            <li><strong>Presiona</strong> "Auditar fuente" para aplicar la puntuación y las reglas de bloqueo.</li>
-            <li><strong>Revisa</strong> tu matriz y analiza los hallazgos críticos antes de enviar tu reporte.</li>
-          </ol>
+    <section class="view active" id="view-instructions">
+  <div class="card">
+    <h2>Instrucciones de Uso</h2>
 
-          <div class="notice">
-            <strong>Importante:</strong> la auditoría es determinística y utiliza solo los datos ingresados. No consulta ni inventa fuentes, citas, autores o metodología.
-          </div>
-        </div>
+    <h3>Paso 1: Tu Bitácora de Búsqueda</h3>
+    <p class="card-subtitle">Antes de evaluar, debes demostrar cómo encontraste la información.</p>
+    <ol>
+      <li><strong>Registra tu estrategia:</strong> Escribe el prompt que le diste a la IA y las palabras clave técnicas que descubriste.</li>
+      <li><strong>Anota tu cadena:</strong> Pega la búsqueda exacta que hiciste en Google. (⚠️ Atención: el sistema no te dejará avanzar si no incluyes <code>site:</code> o <code>filetype:</code> para filtrar la basura comercial).</li>
+      <li><strong>Guarda:</strong> Haz clic en "Guardar Bitácora y Auditar" para desbloquear la matriz.</li>
+    </ol>
 
-        <div class="card">
-          <h3>Reglas de bloqueo aplicadas</h3>
-          <ul>
-            <li>Sin fuente primaria, una fuente no puede clasificarse como sustentada.</li>
-            <li>Una cifra central sin metodología suficiente queda como máximo en “Útil con reservas”.</li>
-            <li>Una referencia comprobada como inexistente activa el riesgo de “Posible alucinación”.</li>
-            <li>Publicaciones que dependen del mismo origen no cuentan como triangulación independiente.</li>
-            <li>Una fuente sustentada o útil con reservas sin Perma Link se marca como “Preservación incompleta”.</li>
-          </ul>
-        </div>
-      </section>
+    <h3>Paso 2: Auditoría de Fuentes</h3>
+    <p class="card-subtitle">Evalúa la calidad del documento original.</p>
+    <ol>
+      <li><strong>Selecciona:</strong> Elige la pestaña de la fuente a evaluar (Fuente 1 a 5).</li>
+      <li><strong>Ingresa los datos:</strong> Pega la afirmación exacta, la institución autora y tu enlace de respaldo (Perma.cc).</li>
+      <li><strong>Verifica:</strong> Marca las casillas solo si puedes comprobar esos criterios leyendo el documento. Si no estás seguro, no lo marques.</li>
+      <li><strong>Audita:</strong> Presiona "Auditar fuente". El algoritmo evaluará tus respuestas y te asignará un nivel de riesgo.</li>
+      <li><strong>Revisa:</strong> Ve a la pestaña "Resultados" y "Hallazgos Críticos" para ver el veredicto final.</li>
+    </ol>
+
+    <div class="notice">
+      📌 <strong>Nota:</strong> esta aplicación no busca en internet ni inventa datos. El resultado depende 100% de la precisión de lo que tú marques.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>¿Por qué el sistema te puede bloquear o bajar puntos?</h3>
+    <ul>
+      <li><strong>Búsqueda no válida:</strong> Olvidaste usar operadores restrictivos (<code>site:</code> o <code>filetype:</code>).</li>
+      <li><strong>Sin fuente original:</strong> Si no llegas al documento primario, la fuente nunca será marcada como "Sustentada".</li>
+      <li><strong>Cifras al aire:</strong> Si el documento da números pero no explica su metodología, se marcará como "Útil con reservas".</li>
+      <li><strong>Falta de blindaje:</strong> Si no incluyes el enlace de Perma.cc, el sistema lanzará alerta de preservación.</li>
+    </ul>
+  </div>
+</section>
+      
 <section class="view" id="view-bitacora">
   <div class="hero">
-    <h2>Bitácora de Búsqueda</h2>
+   <h2 id="bitacoraHeading">Bitácora de Búsqueda · Fuente #1</h2>
     <p>Esta bitácora es tu póliza de seguro profesional: deja constancia de cómo llegaste a tu evidencia antes de auditarla. Complétala con tu propio proceso de investigación antes de continuar.</p>
   </div>
 
@@ -841,14 +851,15 @@
     }
 
     function switchSource(i){
-      collectForm();
-      app.current=i;
-      persist();
-      loadSource();
-      renderPicker();
-      renderSingleResult();
-    }
-
+  collectForm();
+  app.current=i;
+  persist();
+  loadSource();
+  cargarBitacora();
+  renderPicker();
+  renderSingleResult();
+}
+    
     function loadSource(){
       const s=app.sources[app.current];
       const form=document.getElementById("auditForm");
@@ -1444,24 +1455,27 @@
           `).join("")
           :`<div class="empty">Audita las fuentes para identificar riesgos y bloqueos.</div>`;
     }
+function showView(name){
+  if(name === "audit" && (!app.bitacoras[app.current] || !app.bitacoras[app.current].validada)){
+    alert("Primero debes completar la Bitácora de Búsqueda de esta fuente (Fuente #" + (app.current+1) + ") antes de auditarla.");
+    name = "bitacora";
+  }
 
-    function showView(name){
-      if(name!=="audit"){
-        collectForm();
-      }
+  if(name!=="audit"){
+    collectForm();
+  }
 
-      document.querySelectorAll(".view").forEach(view=>{
-        view.classList.toggle("active",view.id==="view-"+name);
-      });
+  document.querySelectorAll(".view").forEach(view=>{
+    view.classList.toggle("active",view.id==="view-"+name);
+  });
 
-      document.querySelectorAll(".nav-button").forEach(button=>{
-        button.classList.toggle("active",button.dataset.view===name);
-      });
+  document.querySelectorAll(".nav-button").forEach(button=>{
+    button.classList.toggle("active",button.dataset.view===name);
+  });
 
-      renderAll();
-      window.scrollTo({top:0,behavior:"smooth"});
-    }
-
+  renderAll();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
     function toggleTimer(){
       timerRunning=!timerRunning;
 
@@ -1987,8 +2001,9 @@
 
 // Aseguramos que exista un espacio para la bitácora dentro
 // del mismo objeto "app" que ya guarda las fuentes.
-if(!app.bitacora){
-  app.bitacora = {
+
+function emptyBitacora(){
+  return {
     prompt: "",
     vocabulario: "",
     cadena: "",
@@ -1998,12 +2013,24 @@ if(!app.bitacora){
   };
 }
 
+if(!app.bitacoras){
+  app.bitacoras = Array.from({length:5}, emptyBitacora);
+}
+while(app.bitacoras.length < 5){
+  app.bitacoras.push(emptyBitacora());
+} 
+
 function cargarBitacora(){
-  document.getElementById("bitPrompt").value = app.bitacora.prompt;
-  document.getElementById("bitVocabulario").value = app.bitacora.vocabulario;
-  document.getElementById("bitCadena").value = app.bitacora.cadena;
-  document.getElementById("bitDominios").value = app.bitacora.dominios;
-  document.getElementById("bitAprendizajes").value = app.bitacora.aprendizajes;
+  const b = app.bitacoras[app.current];
+  document.getElementById("bitPrompt").value = b.prompt;
+  document.getElementById("bitVocabulario").value = b.vocabulario;
+  document.getElementById("bitCadena").value = b.cadena;
+  document.getElementById("bitDominios").value = b.dominios;
+  document.getElementById("bitAprendizajes").value = b.aprendizajes;
+  mostrarMensajeBitacora("", "");
+
+  document.getElementById("bitacoraHeading") &&
+    (document.getElementById("bitacoraHeading").textContent = "Bitácora · Fuente #" + (app.current+1));
 }
 
 function mostrarMensajeBitacora(texto, tipo){
@@ -2045,7 +2072,7 @@ function validarReglaEco(datos){
 }
 
 function guardarBitacora(datos){
-  app.bitacora = { ...datos, validada: true };
+  app.bitacoras[app.current] = { ...datos, validada: true };
   persist();
 }
 
