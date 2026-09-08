@@ -672,31 +672,59 @@
         <span class="hint">Copia el prompt que usaste tal cual lo escribiste.</span>
       </div>
 
-      <div class="field">
+            <div class="field">
         <label for="bitVocabulario">Vocabulario hiper-técnico / traducciones descubiertas *</label>
         <textarea id="bitVocabulario" name="bitVocabulario" placeholder="Ej. términos técnicos, siglas, nombres en otro idioma que descubriste gracias a la IA."></textarea>
         <span class="hint">Estas palabras son tu materia prima para armar una búsqueda precisa.</span>
       </div>
-    </div>
-
-    <div class="card">
-      <h3>2. La Extracción (Buscador)</h3>
-      <p class="card-subtitle">Aquí va tu búsqueda real, ya con operadores booleanos.</p>
 
       <div class="field">
-        <label for="bitCadena">Cadena de búsqueda exacta con operadores booleanos *</label>
-        <input id="bitCadena" name="bitCadena" placeholder='Ej. "palabra clave" site:gob.mx filetype:pdf'>
-        <span class="hint">Copia y pega la cadena tal como la escribiste en el buscador, incluyendo operadores como site: filetype: OR "comillas".</span>
+        <label for="bitDominiosIA">Dominios/instituciones sugeridos por la IA</label>
+        <input id="bitDominiosIA" name="bitDominiosIA" placeholder="Ej. banxico.org.mx, inegi.org.mx, cepal.org">
+        <span class="hint">Esta es tu hipótesis inicial (lo que la IA te propuso), todavía sin comprobar. La compararás más abajo contra lo que realmente encontraste.</span>
       </div>
     </div>
+    
+    <div class="card">
+  <h3>2. La Extracción (Buscador)</h3>
+  <p class="card-subtitle">Arma tu fórmula con las piezas del método, o escríbela tú mismo si ya sabes cómo.</p>
 
+  <div class="notice">
+    <strong>Tip:</strong> no cierres la pestaña de tu IA todavía — la vas a necesitar para copiar tu vocabulario técnico.
+  </div>
+
+  <div class="grid">
+    <div class="field">
+      <label for="bitDominioConstructor">Dominio institucional</label>
+      <input id="bitDominioConstructor" placeholder="Ej. banxico.org.mx">
+      <span class="hint">Sin "https://" ni "www.", solo el dominio.</span>
+    </div>
+    <div class="field">
+      <label for="bitPalabraConstructor">Palabra clave técnica</label>
+      <input id="bitPalabraConstructor" placeholder="Ej. inclusión financiera">
+      <span class="hint">Se le agregarán las comillas automáticamente.</span>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button type="button" class="btn secondary" id="btnGenerarCadena">🔧 Generar fórmula automáticamente</button>
+  </div>
+
+  <div class="field">
+    <label for="bitCadena">Cadena de búsqueda exacta con operadores booleanos *</label>
+    <input id="bitCadena" name="bitCadena" placeholder='Ej. site:gob.mx filetype:pdf "palabra clave"'>
+    <span class="hint">Se llena sola al presionar el botón de arriba, o puedes escribirla tú mismo. Debe incluir site:, filetype:pdf y tu palabra entre comillas.</span>
+  </div>
+</div>
+    
     <div class="card">
       <h3>3. Trazabilidad</h3>
       <p class="card-subtitle">Cierra tu bitácora dejando constancia de dónde llegaste y qué aprendiste.</p>
 
-      <div class="field">
-        <label for="bitDominios">Instituciones/Dominios primarios identificados</label>
-        <input id="bitDominios" name="bitDominios" placeholder="Ej. oms.int, gob.mx, unam.mx">
+           <div class="field">
+        <label for="bitDominios">Dominio real de donde extrajiste el documento</label>
+        <input id="bitDominios" name="bitDominios" placeholder="Ej. banxico.org.mx">
+        <span class="hint">Este es el dominio que TÚ verificaste al abrir el PDF — compáralo contra lo que la IA te había sugerido arriba.</span>
       </div>
 
       <div class="field">
@@ -2054,13 +2082,13 @@ function emptyBitacora(){
   return {
     prompt: "",
     vocabulario: "",
+    dominiosIA: "",
     cadena: "",
     dominios: "",
     aprendizajes: "",
     validada: false
   };
 }
-
 if(!app.bitacoras){
   app.bitacoras = Array.from({length:5}, emptyBitacora);
 }
@@ -2072,6 +2100,7 @@ function cargarBitacora(){
   const b = app.bitacoras[app.current];
   document.getElementById("bitPrompt").value = b.prompt;
   document.getElementById("bitVocabulario").value = b.vocabulario;
+  document.getElementById("bitDominiosIA").value = b.dominiosIA || "";
   document.getElementById("bitCadena").value = b.cadena;
   document.getElementById("bitDominios").value = b.dominios;
   document.getElementById("bitAprendizajes").value = b.aprendizajes;
@@ -2080,7 +2109,7 @@ function cargarBitacora(){
   document.getElementById("bitacoraHeading") &&
     (document.getElementById("bitacoraHeading").textContent = "Bitácora · Fuente #" + (app.current+1));
 }
-
+    
 function mostrarMensajeBitacora(texto, tipo){
   const contenedor = document.getElementById("bitacoraMensaje");
   if(!contenedor) return;
@@ -2097,6 +2126,31 @@ function mostrarMensajeBitacora(texto, tipo){
 // tu búsqueda trae rumores y blogs, no fuentes de primera mano.
 // Exige "site:" Y "filetype:pdf" juntos, tal como se enseña en la
 // fórmula de 3 piezas (dominio + formato + palabra entre comillas).
+// Limpia lo que el estudiante pegue como dominio: quita "https://",
+// "www." y cualquier cosa después de la primera "/", para que quede
+// solo el dominio limpio (ej. "banxico.org.mx").
+function limpiarDominio(valor){
+  return valor
+    .trim()
+    .replace(/^https?:\/\//i, "")
+    .replace(/^www\./i, "")
+    .replace(/\/.*$/, "");
+}
+
+function generarCadenaBusqueda(){
+  const dominio = limpiarDominio(document.getElementById("bitDominioConstructor").value);
+  const palabra = document.getElementById("bitPalabraConstructor").value.trim();
+
+  if(!dominio || !palabra){
+    alert("Para generar la fórmula automáticamente necesitas escribir tanto el dominio institucional como la palabra clave.");
+    return;
+  }
+
+  const cadena = `site:${dominio} filetype:pdf "${palabra}"`;
+  document.getElementById("bitCadena").value = cadena;
+  mostrarMensajeBitacora("", "");
+}
+    
 function validarReglaEco(datos){
   const cadena = datos.cadena.toLowerCase();
   const tieneSite = cadena.includes("site:");
@@ -2131,17 +2185,19 @@ function initBitacora(){
 
   cargarBitacora();
 
+  document.getElementById("btnGenerarCadena").addEventListener("click", generarCadenaBusqueda);
   form.addEventListener("submit", e => {
     e.preventDefault();
 
-    const datos = {
+        const datos = {
       prompt: document.getElementById("bitPrompt").value,
       vocabulario: document.getElementById("bitVocabulario").value,
+      dominiosIA: document.getElementById("bitDominiosIA").value,
       cadena: document.getElementById("bitCadena").value,
       dominios: document.getElementById("bitDominios").value,
       aprendizajes: document.getElementById("bitAprendizajes").value
     };
-
+    
     const errorBunge = validarReglaBunge(datos);
     if(errorBunge){
       alert(errorBunge);
