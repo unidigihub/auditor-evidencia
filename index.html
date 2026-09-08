@@ -2086,32 +2086,33 @@ function mostrarMensajeBitacora(texto, tipo){
     : "";
 }
 
-// Regla de Mario Bunge: no hay búsqueda fáctica válida sin
-// haber definido antes tu problema/hipótesis de vocabulario.
-function validarReglaBunge(datos){
-  const hayCadena = datos.cadena.trim().length > 0;
-  const faltaPrompt = datos.prompt.trim().length === 0;
-  const faltaVocabulario = datos.vocabulario.trim().length === 0;
-
-  if(hayCadena && (faltaPrompt || faltaVocabulario)){
-    return "Error Metodológico (Bunge): No puedes lanzar una búsqueda a ciegas. Primero debes generar tu hipótesis de vocabulario técnico con la IA.";
-  }
-  return null;
-}
-
-// Regla de Umberto Eco: sin operadores estrictos, tu búsqueda
-// trae rumores y blogs, no fuentes de primera mano.
+// Regla de Umberto Eco: sin operadores estrictos combinados,
+// tu búsqueda trae rumores y blogs, no fuentes de primera mano.
+// Exige "site:" Y "filetype:pdf" juntos, tal como se enseña en la
+// fórmula de 3 piezas (dominio + formato + palabra entre comillas).
 function validarReglaEco(datos){
   const cadena = datos.cadena.toLowerCase();
   const tieneSite = cadena.includes("site:");
   const tieneFiletype = cadena.includes("filetype:pdf");
+  const tieneComillas = /"[^"]+"/.test(datos.cadena);
 
-  if(datos.cadena.trim().length > 0 && !tieneSite && !tieneFiletype){
+  if(datos.cadena.trim().length === 0) return null;
+
+  if(!tieneSite && !tieneFiletype){
     return "Peligro de Segunda Mano (Eco): Tu cadena de búsqueda no incluye filtros estrictos (site: o filetype:). El algoritmo te entregará blogs y rumores comerciales. Ajusta tus operadores.";
   }
+
+  if(!tieneSite || !tieneFiletype){
+    return "Fórmula incompleta (Eco): Tu cadena debe combinar site: (para restringir el dominio) Y filetype:pdf (para forzar el documento original), no solo uno de los dos. Ejemplo: site:banxico.org.mx filetype:pdf \"tu palabra clave\"";
+  }
+
+  if(!tieneComillas){
+    return "Falta precisión (Eco): Pon tu palabra clave técnica entre comillas para que Google la busque de forma exacta. Ejemplo: site:banxico.org.mx filetype:pdf \"inclusión financiera\"";
+  }
+
   return null;
 }
-
+    
 function guardarBitacora(datos){
   app.bitacoras[app.current] = { ...datos, validada: true };
   persist();
