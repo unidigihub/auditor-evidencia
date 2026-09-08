@@ -721,12 +721,19 @@
       <h3>3. Trazabilidad</h3>
       <p class="card-subtitle">Cierra tu bitácora dejando constancia de dónde llegaste y qué aprendiste.</p>
 
-           <div class="field">
+                 <div class="field">
         <label for="bitDominios">Dominio real de donde extrajiste el documento</label>
         <input id="bitDominios" name="bitDominios" placeholder="Ej. banxico.org.mx">
         <span class="hint">Este es el dominio que TÚ verificaste al abrir el PDF — compáralo contra lo que la IA te había sugerido arriba.</span>
       </div>
 
+      <div class="field">
+        <label class="check" style="min-height:auto;padding:14px 12px">
+          <input type="checkbox" id="bitVerificado" name="bitVerificado">
+          Confirmo que verifiqué manualmente que este dominio es institucional (no un blog, agencia de marketing o sitio comercial).
+        </label>
+      </div>
+      
       <div class="field">
         <label for="bitAprendizajes">Aprendizajes del proceso</label>
         <textarea id="bitAprendizajes" name="bitAprendizajes" placeholder="Ej. qué te costó trabajo, qué cambiarías en tu próxima búsqueda."></textarea>
@@ -2085,10 +2092,12 @@ function emptyBitacora(){
     dominiosIA: "",
     cadena: "",
     dominios: "",
+    verificado: false,
     aprendizajes: "",
     validada: false
   };
 }
+    
 if(!app.bitacoras){
   app.bitacoras = Array.from({length:5}, emptyBitacora);
 }
