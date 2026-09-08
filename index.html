@@ -31,7 +31,8 @@
     .nav-button{width:100%;border:0;background:transparent;text-align:left;padding:11px 12px;border-radius:11px;color:var(--muted);margin:2px 0}
     .nav-button:hover,.nav-button.active{background:var(--cyan);color:var(--navy);font-weight:750}
     .source-picker{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin:12px 0}
-    .source-chip{border:1px solid var(--line);background:#fff;border-radius:9px;padding:9px 0;font-weight:800;color:var(--muted)}
+    .source-chip{position:relative;border:1px solid var(--line);background:#fff;border-radius:9px;padding:9px 0;font-weight:800;color:var(--muted)}
+.chip-icon{position:absolute;top:-7px;right:-5px;font-size:.68rem;line-height:1;background:#fff;border-radius:50%;padding:1px 3px;box-shadow:0 1px 3px #0003}
     .source-chip.active{background:var(--navy);color:#fff;border-color:var(--navy);outline:3px solid #42c6d6;outline-offset:2px}
     .source-chip.done{box-shadow:none}
     .source-chip.done.green{background:var(--green);border-color:var(--green);color:#fff}
@@ -861,36 +862,42 @@ function init(){
   }
 }
     function renderPicker(){
-      const box=document.getElementById("sourcePicker");
-      box.innerHTML="";
+  const box=document.getElementById("sourcePicker");
+  box.innerHTML="";
 
-      app.sources.forEach((s,i)=>{
-        const button=document.createElement("button");
-        const classificationClass=s.audit ? ` done ${s.audit.color}` : "";
+  app.sources.forEach((s,i)=>{
+    const button=document.createElement("button");
+    const classificationClass=s.audit ? ` done ${s.audit.color}` : "";
+    const bitacoraLista = app.bitacoras[i] && app.bitacoras[i].validada;
 
-        button.type="button";
-        button.className=
-          "source-chip" +
-          (i===app.current ? " active" : "") +
-          classificationClass;
+    // Icono según el avance de ESTA fuente:
+    // 🔒 = falta completar la bitácora (no puede auditar todavía)
+    // 🔓 = bitácora lista, pero aún no se audita
+    // ✅ = ya está auditada
+    const icono = s.audit ? "✅" : (bitacoraLista ? "🔓" : "🔒");
 
-        button.textContent=i+1;
-        button.title=s.audit
-          ? `Fuente ${i+1}: ${s.audit.shortLabel}`
-          : `Fuente ${i+1}: sin auditar`;
+    button.type="button";
+    button.className=
+      "source-chip" +
+      (i===app.current ? " active" : "") +
+      classificationClass;
 
-        button.setAttribute(
-          "aria-label",
-          s.audit
-            ? `Fuente ${i+1}, ${s.audit.shortLabel}`
-            : `Fuente ${i+1}, sin auditar`
-        );
+    button.innerHTML = (i+1) + '<span class="chip-icon">' + icono + '</span>';
 
-        button.onclick=()=>switchSource(i);
-        box.appendChild(button);
-      });
-    }
+    const estado = s.audit
+      ? s.audit.shortLabel
+      : bitacoraLista
+        ? "bitácora lista, falta auditar"
+        : "falta completar la bitácora de búsqueda";
 
+    button.title = `Fuente ${i+1}: ${estado}`;
+    button.setAttribute("aria-label", `Fuente ${i+1}, ${estado}`);
+
+    button.onclick=()=>switchSource(i);
+    box.appendChild(button);
+  });
+}
+    
     function switchSource(i){
   collectForm();
   app.current=i;
@@ -2149,11 +2156,13 @@ function initBitacora(){
       return;
     }
 
-    guardarBitacora(datos);
+        guardarBitacora(datos);
     mostrarMensajeBitacora("Bitácora guardada correctamente. Ya puedes continuar con la auditoría de tu fuente.", "ok");
+    renderPicker();
     showView("audit");
   });
-}  
+}
+    
     init();
   </script>
 </body>
