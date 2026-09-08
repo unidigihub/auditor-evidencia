@@ -224,7 +224,7 @@
 <button class="nav-button" data-view="critical">⚠ Hallazgos críticos</button>
       </nav>
 
-      <div class="source-picker" id="sourcePicker" aria-label="Seleccionar fuente"></div>
+     <button type="button" class="btn light" style="width:100%;margin-top:10px" id="btnReiniciar">🗑️ Nueva auditoría (borrar datos)</button>
 
       <div class="phase">
         <strong>Ruta sugerida · 50 minutos</strong><br>
@@ -795,30 +795,70 @@
       return value.length>n ? value.slice(0,n)+"…" : value;
     }
 
-    function init(){
-      renderPicker();
-      loadSource();
-      renderAll();
+   function hayDatosPrevios(){
+  const tieneFuentes = app.sources.some(s =>
+    (s.personName && s.personName.trim()) ||
+    (s.title && s.title.trim()) ||
+    s.audit
+  );
+  const tieneBitacoras = app.bitacoras.some(b => b.validada);
+  return tieneFuentes || tieneBitacoras;
+}
 
-      document.querySelectorAll(".nav-button").forEach(btn=>{
-        btn.addEventListener("click",()=>showView(btn.dataset.view));
-      });
+function reiniciarAuditoria(pedirConfirmacion){
+  const proceder = pedirConfirmacion
+    ? confirm("Esto borrará toda la información guardada en este dispositivo (bitácoras y fuentes auditadas) para empezar una auditoría nueva en blanco. ¿Deseas continuar?")
+    : true;
 
-      document.getElementById("auditForm").addEventListener("submit",e=>{
-        e.preventDefault();
-        collectForm();
-        app.sources[app.current].audit = auditSource(app.sources[app.current]);
-        persist();
-        renderAll();
-        renderSingleResult();
-        renderPicker();
-      });
+  if(!proceder) return;
 
-      if(!localStorage.getItem("auditorEndpoint")){
-        localStorage.setItem("auditorEndpoint",DEFAULT_ENDPOINT);
-      }
+  localStorage.removeItem("auditorEvidenciaData");
+  location.reload();
+}
+
+function init(){
+
+  // Si en este dispositivo ya existe una auditoría guardada de una
+  // sesión anterior, se le pregunta al estudiante qué hacer para
+  // evitar que vea o continúe accidentalmente el trabajo de otra persona.
+  if(hayDatosPrevios()){
+    const continuar = confirm(
+      "Este dispositivo tiene una auditoría guardada de una sesión anterior.\n\n" +
+      "Presiona ACEPTAR para continuarla, o CANCELAR para borrarla y empezar una auditoría nueva en blanco."
+    );
+    if(!continuar){
+      localStorage.removeItem("auditorEvidenciaData");
+      location.reload();
+      return;
     }
+  }
 
+  renderPicker();
+  loadSource();
+  renderAll();
+
+  document.querySelectorAll(".nav-button").forEach(btn=>{
+    btn.addEventListener("click",()=>showView(btn.dataset.view));
+  });
+
+  document.getElementById("auditForm").addEventListener("submit",e=>{
+    e.preventDefault();
+    collectForm();
+    app.sources[app.current].audit = auditSource(app.sources[app.current]);
+    persist();
+    renderAll();
+    renderSingleResult();
+    renderPicker();
+  });
+
+  document.getElementById("btnReiniciar").addEventListener("click",()=>{
+    reiniciarAuditoria(true);
+  });
+
+  if(!localStorage.getItem("auditorEndpoint")){
+    localStorage.setItem("auditorEndpoint",DEFAULT_ENDPOINT);
+  }
+}
     function renderPicker(){
       const box=document.getElementById("sourcePicker");
       box.innerHTML="";
