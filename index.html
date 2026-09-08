@@ -217,10 +217,11 @@
     <aside class="sidebar">
       <nav class="nav-list" aria-label="Navegación principal">
        <button class="nav-button active" data-view="instructions">ⓘ Instrucciones</button>
+<button class="nav-button" data-view="bitacora">🧭 Bitácora de Búsqueda</button>
 <button class="nav-button" data-view="audit">📝 Auditar fuentes</button>
-        <button class="nav-button" data-view="results">📊 Resultados de la auditoria</button>
-        <button class="nav-button" data-view="matrix">▦ Matriz de Evidencia</button>
-        <button class="nav-button" data-view="critical">⚠ Hallazgos críticos</button>  
+<button class="nav-button" data-view="results">📊 Resultados de la auditoria</button>
+<button class="nav-button" data-view="matrix">▦ Matriz de Evidencia</button>
+<button class="nav-button" data-view="critical">⚠ Hallazgos críticos</button>
       </nav>
 
       <div class="source-picker" id="sourcePicker" aria-label="Seleccionar fuente"></div>
@@ -637,6 +638,68 @@
           </ul>
         </div>
       </section>
+<section class="view" id="view-bitacora">
+  <div class="hero">
+    <h2>Bitácora de Búsqueda</h2>
+    <p>Esta bitácora es tu póliza de seguro profesional: deja constancia de cómo llegaste a tu evidencia antes de auditarla. Complétala con tu propio proceso de investigación antes de continuar.</p>
+  </div>
+
+  <div class="notice">
+    <strong>Paso obligatorio:</strong> debes guardar esta bitácora antes de poder auditar tu fuente. Sin trazabilidad de tu búsqueda, no puedes distinguir después si encontraste una fuente primaria o el primer resultado que apareció.
+  </div>
+
+  <form id="bitacoraForm" autocomplete="off">
+
+    <div class="card">
+      <h3>1. El Estratega (IA)</h3>
+      <p class="card-subtitle">Registra cómo usaste la IA para preparar tu búsqueda, antes de salir a buscar.</p>
+
+      <div class="field">
+        <label for="bitPrompt">Prompt exploratorio utilizado *</label>
+        <textarea id="bitPrompt" name="bitPrompt" placeholder="Ej. Pídele a la IA que te ayude a mapear el tema y proponer términos técnicos relacionados."></textarea>
+        <span class="hint">Copia el prompt que usaste tal cual lo escribiste.</span>
+      </div>
+
+      <div class="field">
+        <label for="bitVocabulario">Vocabulario hiper-técnico / traducciones descubiertas *</label>
+        <textarea id="bitVocabulario" name="bitVocabulario" placeholder="Ej. términos técnicos, siglas, nombres en otro idioma que descubriste gracias a la IA."></textarea>
+        <span class="hint">Estas palabras son tu materia prima para armar una búsqueda precisa.</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>2. La Extracción (Buscador)</h3>
+      <p class="card-subtitle">Aquí va tu búsqueda real, ya con operadores booleanos.</p>
+
+      <div class="field">
+        <label for="bitCadena">Cadena de búsqueda exacta con operadores booleanos *</label>
+        <input id="bitCadena" name="bitCadena" placeholder='Ej. "palabra clave" site:gob.mx filetype:pdf'>
+        <span class="hint">Copia y pega la cadena tal como la escribiste en el buscador, incluyendo operadores como site: filetype: OR "comillas".</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>3. Trazabilidad</h3>
+      <p class="card-subtitle">Cierra tu bitácora dejando constancia de dónde llegaste y qué aprendiste.</p>
+
+      <div class="field">
+        <label for="bitDominios">Instituciones/Dominios primarios identificados</label>
+        <input id="bitDominios" name="bitDominios" placeholder="Ej. oms.int, gob.mx, unam.mx">
+      </div>
+
+      <div class="field">
+        <label for="bitAprendizajes">Aprendizajes del proceso</label>
+        <textarea id="bitAprendizajes" name="bitAprendizajes" placeholder="Ej. qué te costó trabajo, qué cambiarías en tu próxima búsqueda."></textarea>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="btn primary">Guardar Bitácora y Auditar</button>
+    </div>
+
+    <div id="bitacoraMensaje"></div>
+  </form>
+</section>
     </main>
   </div>
 
@@ -1918,6 +1981,110 @@
 
       return results;
     }
+// ------------------------------------------------------------
+// BITÁCORA DE BÚSQUEDA — Estado, validación epistemológica y candado
+// ------------------------------------------------------------
+
+// Aseguramos que exista un espacio para la bitácora dentro
+// del mismo objeto "app" que ya guarda las fuentes.
+if(!app.bitacora){
+  app.bitacora = {
+    prompt: "",
+    vocabulario: "",
+    cadena: "",
+    dominios: "",
+    aprendizajes: "",
+    validada: false
+  };
+}
+
+function cargarBitacora(){
+  document.getElementById("bitPrompt").value = app.bitacora.prompt;
+  document.getElementById("bitVocabulario").value = app.bitacora.vocabulario;
+  document.getElementById("bitCadena").value = app.bitacora.cadena;
+  document.getElementById("bitDominios").value = app.bitacora.dominios;
+  document.getElementById("bitAprendizajes").value = app.bitacora.aprendizajes;
+}
+
+function mostrarMensajeBitacora(texto, tipo){
+  const contenedor = document.getElementById("bitacoraMensaje");
+  if(!contenedor) return;
+  contenedor.innerHTML = texto
+    ? '<div class="notice" style="background:' +
+      (tipo === "error" ? "var(--red-bg)" : "var(--green-bg)") +
+      ";color:" +
+      (tipo === "error" ? "var(--red)" : "var(--green)") +
+      '">' + escapeHTML(texto) + "</div>"
+    : "";
+}
+
+// Regla de Mario Bunge: no hay búsqueda fáctica válida sin
+// haber definido antes tu problema/hipótesis de vocabulario.
+function validarReglaBunge(datos){
+  const hayCadena = datos.cadena.trim().length > 0;
+  const faltaPrompt = datos.prompt.trim().length === 0;
+  const faltaVocabulario = datos.vocabulario.trim().length === 0;
+
+  if(hayCadena && (faltaPrompt || faltaVocabulario)){
+    return "Error Metodológico (Bunge): No puedes lanzar una búsqueda a ciegas. Primero debes generar tu hipótesis de vocabulario técnico con la IA.";
+  }
+  return null;
+}
+
+// Regla de Umberto Eco: sin operadores estrictos, tu búsqueda
+// trae rumores y blogs, no fuentes de primera mano.
+function validarReglaEco(datos){
+  const cadena = datos.cadena.toLowerCase();
+  const tieneSite = cadena.includes("site:");
+  const tieneFiletype = cadena.includes("filetype:pdf");
+
+  if(datos.cadena.trim().length > 0 && !tieneSite && !tieneFiletype){
+    return "Peligro de Segunda Mano (Eco): Tu cadena de búsqueda no incluye filtros estrictos (site: o filetype:). El algoritmo te entregará blogs y rumores comerciales. Ajusta tus operadores.";
+  }
+  return null;
+}
+
+function guardarBitacora(datos){
+  app.bitacora = { ...datos, validada: true };
+  persist();
+}
+
+function initBitacora(){
+  const form = document.getElementById("bitacoraForm");
+  if(!form) return;
+
+  cargarBitacora();
+
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+
+    const datos = {
+      prompt: document.getElementById("bitPrompt").value,
+      vocabulario: document.getElementById("bitVocabulario").value,
+      cadena: document.getElementById("bitCadena").value,
+      dominios: document.getElementById("bitDominios").value,
+      aprendizajes: document.getElementById("bitAprendizajes").value
+    };
+
+    const errorBunge = validarReglaBunge(datos);
+    if(errorBunge){
+      alert(errorBunge);
+      mostrarMensajeBitacora(errorBunge, "error");
+      return;
+    }
+
+    const errorEco = validarReglaEco(datos);
+    if(errorEco){
+      alert(errorEco);
+      mostrarMensajeBitacora(errorEco, "error");
+      return;
+    }
+
+    guardarBitacora(datos);
+    mostrarMensajeBitacora("Bitácora guardada correctamente. Ya puedes continuar con la auditoría de tu fuente.", "ok");
+    showView("audit");
+  });
+}  
     init();
   </script>
 </body>
