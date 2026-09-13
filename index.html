@@ -893,15 +893,21 @@ while(app.bitacoras.length < 5){
   document.getElementById("perfilEdad").value = app.perfil.age;
   document.getElementById("perfilGenero").value = app.perfil.gender;
 
-  ["perfilNombre","perfilEmail","perfilEdad","perfilGenero"].forEach(id=>{
-    document.getElementById(id).addEventListener("input", ()=>{
+    ["perfilNombre","perfilEmail","perfilEdad","perfilGenero"].forEach(id=>{
+    document.getElementById(id).addEventListener("blur", ()=>{
       app.perfil.personName = document.getElementById("perfilNombre").value;
       app.perfil.personId = document.getElementById("perfilEmail").value;
       app.perfil.age = document.getElementById("perfilEdad").value;
       app.perfil.gender = document.getElementById("perfilGenero").value;
       persist();
+
+      document.getElementById("perfilNombre").style.borderColor =
+        app.perfil.personName.trim() ? "" : "var(--red)";
+      document.getElementById("perfilEmail").style.borderColor =
+        app.perfil.personId.trim() ? "" : "var(--red)";
     });
   });
+  
   document.querySelectorAll(".nav-button").forEach(btn=>{
     btn.addEventListener("click",()=>showView(btn.dataset.view));
   });
