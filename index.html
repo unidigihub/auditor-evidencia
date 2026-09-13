@@ -939,8 +939,9 @@ while(app.bitacoras.length < 5){
     btn.addEventListener("click",()=>showView(btn.dataset.view));
   });
 
-  document.getElementById("auditForm").addEventListener("submit",e=>{
+    document.getElementById("auditForm").addEventListener("submit",e=>{
     e.preventDefault();
+    if(!perfilCompleto()) return;
     collectForm();
     app.sources[app.current].audit = auditSource(app.sources[app.current]);
     persist();
@@ -948,7 +949,6 @@ while(app.bitacoras.length < 5){
     renderSingleResult();
     renderPicker();
   });
-
   document.getElementById("btnReiniciar").addEventListener("click",()=>{
     reiniciarAuditoria(true);
   });
@@ -1218,10 +1218,9 @@ while(app.bitacoras.length < 5){
       };
     }
 
-    function auditAll(){
+       function auditAll(){
+      if(!perfilCompleto()) return;
       collectForm();
-      let count=0;
-
       app.sources.forEach(s=>{
         if(s.title||s.claim||s.url){
           s.audit=auditSource(s);
@@ -1657,9 +1656,9 @@ function recordsForExport(){
     auditId:s.audit.auditId
   }));
 }   
-    async function closeAuditAndSend(){
+      async function closeAuditAndSend(){
+      if(!perfilCompleto()) return;
       collectForm();
-
       const sourcesWithData=app.sources.filter(
         s=>s.title||s.claim||s.url
       );
