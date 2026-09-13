@@ -2218,13 +2218,6 @@ function initBitacora(){
       aprendizajes: document.getElementById("bitAprendizajes").value
     };
 
-        const errorBunge = validarReglaBunge(datos);
-    if(errorBunge){
-      alert(errorBunge);
-      mostrarMensajeBitacora(errorBunge, "error");
-      return;
-    }
-
     const errorEco = validarReglaEco(datos);
     if(errorEco){
       alert(errorEco);
