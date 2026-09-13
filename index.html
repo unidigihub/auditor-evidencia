@@ -1616,13 +1616,14 @@ function showView(name){
         `${minutes}:${seconds} ${timerRunning?"Ⅱ":"▶"}`;
     }
 
-    function recordsForExport(){
-      return audited().map((s,i)=>({
-        ...s,
-        sourceNumber:i+1,
-        auditId:s.audit.auditId
-      }));
-    }
+function recordsForExport(){
+  return audited().map((s,i)=>({
+    ...app.perfil,
+    ...s,
+    sourceNumber:i+1,
+    auditId:s.audit.auditId
+  }));
+}   
     async function closeAuditAndSend(){
       collectForm();
 
