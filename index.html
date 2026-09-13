@@ -248,6 +248,37 @@
        <div class="notice">
 <strong>Responsabilidad de la persona:</strong> no inventes datos para completar campos. Si no encontraste algo, déjalo vacío o indica "No verificable".
 </div>
+<div class="card" id="perfilCard">
+  <div class="section-title">
+    <h2>Datos del auditor</h2>
+    <span class="hint">Se llenan una sola vez y aplican a las 5 fuentes</span>
+  </div>
+  <div class="grid">
+    <div class="field">
+      <label>Nombre completo *</label>
+      <input id="perfilNombre" required placeholder="Ej. María Pérez">
+    </div>
+    <div class="field">
+      <label>Identificación (email) *</label>
+      <input id="perfilEmail" required placeholder="maria@dominio.com">
+    </div>
+    <div class="field">
+      <label>Edad</label>
+      <input id="perfilEdad" type="number" min="0" placeholder="Ej. 34">
+    </div>
+    <div class="field">
+      <label>Género</label>
+      <select id="perfilGenero">
+        <option value="">No especificar</option>
+        <option>Femenino</option>
+        <option>Masculino</option>
+        <option>No binario</option>
+        <option>Prefiero no decir</option>
+      </select>
+    </div>
+  </div>
+</div>
+       
 <form id="auditForm" autocomplete="off">
           <div class="card">
             <div class="section-title">
