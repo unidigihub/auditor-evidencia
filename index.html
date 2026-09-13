@@ -755,10 +755,6 @@
     const DEFAULT_ENDPOINT = "https://script.google.com/macros/s/AKfycbwjCMvROz9vdeFaTB5Ftl_hIVQ8OR8Fpzc35TaAmcXwGvDXbmXl1Y0cZ25nJ9et8szZig/exec";
 
     const emptySource = () => ({
-      personName: "",
-      personId: "",
-      age: "",
-      gender: "",
       sector: "",
       topic: "",
       title:"",
@@ -794,10 +790,13 @@
     });
 
     let app = JSON.parse(localStorage.getItem("auditorEvidenciaData") || "null") || {
-      sources:Array.from({length:5},emptySource),
-      current:0
-    };
-
+  sources:Array.from({length:5},emptySource),
+  current:0,
+  perfil:{ personName:"", personId:"", age:"", gender:"" }
+};
+if(!app.perfil){
+  app.perfil = { personName:"", personId:"", age:"", gender:"" };
+}
     while(app.sources.length < 5){
       app.sources.push(emptySource());
     }
@@ -854,6 +853,12 @@ function reiniciarAuditoria(pedirConfirmacion){
 }
 
 function init(){
+if(!app.bitacoras){
+  app.bitacoras = Array.from({length:5}, emptyBitacora);
+}
+while(app.bitacoras.length < 5){
+  app.bitacoras.push(emptyBitacora());
+}
 
   // Si en este dispositivo ya existe una auditoría guardada de una
   // sesión anterior, se le pregunta al estudiante qué hacer para
@@ -1639,12 +1644,13 @@ function showView(name){
 
   try{
     await fetch(endpoint,{
-      method:"POST",
-      headers:{
-        "Content-Type":"text/plain;charset=utf-8"
-      },
-      body:JSON.stringify({records})
-    });
+  method:"POST",
+  mode:"no-cors",
+  headers:{
+    "Content-Type":"text/plain;charset=utf-8"
+  },
+  body:JSON.stringify({records})
+});
 
     status.textContent=
       "Auditoría cerrada y Matriz enviada a Google Sheets";
@@ -2096,14 +2102,7 @@ function emptyBitacora(){
     aprendizajes: "",
     validada: false
   };
-}
-    
-if(!app.bitacoras){
-  app.bitacoras = Array.from({length:5}, emptyBitacora);
-}
-while(app.bitacoras.length < 5){
-  app.bitacoras.push(emptyBitacora());
-} 
+}    
 
 function cargarBitacora(){
   const b = app.bitacoras[app.current];
@@ -2219,7 +2218,7 @@ function initBitacora(){
       aprendizajes: document.getElementById("bitAprendizajes").value
     };
 
-    const errorBunge = validarReglaBunge(datos);
+        const errorBunge = validarReglaBunge(datos);
     if(errorBunge){
       alert(errorBunge);
       mostrarMensajeBitacora(errorBunge, "error");
