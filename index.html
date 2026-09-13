@@ -802,6 +802,26 @@
 if(!app.perfil){
   app.perfil = { personName:"", personId:"", age:"", gender:"" };
 }
+if(!app.perfil){
+  app.perfil = { personName:"", personId:"", age:"", gender:"" };
+}
+
+// Migración: en versiones anteriores de esta app, el nombre y el
+// correo del auditor vivían dentro de cada una de las 5 fuentes.
+// Si el perfil está vacío pero alguna fuente vieja todavía los
+// trae guardados, los recuperamos automáticamente para que la
+// persona no tenga que volver a escribirlos.
+if(!app.perfil.personName && !app.perfil.personId){
+  const fuenteConDatosViejos = app.sources.find(s => s.personName || s.personId);
+  if(fuenteConDatosViejos){
+    app.perfil.personName = fuenteConDatosViejos.personName || "";
+    app.perfil.personId = fuenteConDatosViejos.personId || "";
+    app.perfil.age = fuenteConDatosViejos.age || "";
+    app.perfil.gender = fuenteConDatosViejos.gender || "";
+    persist();
+  }
+}
+
     while(app.sources.length < 5){
       app.sources.push(emptySource());
     }
@@ -845,7 +865,18 @@ if(!app.perfil){
   const tieneBitacoras = app.bitacoras.some(b => b.validada);
   return tieneFuentes || tieneBitacoras;
 }
+function perfilCompleto(){
+  const nombreOk = app.perfil.personName && app.perfil.personName.trim();
+  const emailOk = app.perfil.personId && app.perfil.personId.trim();
 
+  if(!nombreOk || !emailOk){
+    alert("Antes de auditar necesitas completar tu Nombre completo y tu Identificación (email) en la sección 'Datos del auditor', arriba de todo.");
+    document.getElementById("perfilCard").scrollIntoView({behavior:"smooth"});
+    return false;
+  }
+  return true;
+}
+    
 function reiniciarAuditoria(pedirConfirmacion){
   const proceder = pedirConfirmacion
     ? confirm("Esto borrará toda la información guardada en este dispositivo (bitácoras y fuentes auditadas) para empezar una auditoría nueva en blanco. ¿Deseas continuar?")
