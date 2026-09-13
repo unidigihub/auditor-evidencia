@@ -9,8 +9,13 @@
   "lang": "es",
   "icons": [
     {
-      "src": "logo-unidigihub.png",
-      "sizes": "any",
+      "src": "icon-unidigihub-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-unidigihub-512.png",
+      "sizes": "512x512",
       "type": "image/png"
     }
   ]
