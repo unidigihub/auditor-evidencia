@@ -842,7 +842,7 @@ if(!app.perfil){
 
    function hayDatosPrevios(){
   const tieneFuentes = app.sources.some(s =>
-    (s.personName && s.personName.trim()) ||
+    (app.perfil.personName && app.perfil.personName.trim()) ||
     (s.title && s.title.trim()) ||
     s.audit
   );
@@ -1696,10 +1696,10 @@ function showView(name){
       return {
   auditoria_id: s.audit?.auditId || "",
   fuente_numero: i + 1,
-  nombre_completo: s.personName,
-  identificacion_email: s.personId,
-  edad: s.age,
-  genero: s.gender,
+  nombre_completo: app.perfil.personName,
+  identificacion_email: app.perfil.personId,
+  edad: app.perfil.age,
+  genero: app.perfil.gender,
   sector: s.sector,
   tema: s.topic,
   titulo: s.title,
