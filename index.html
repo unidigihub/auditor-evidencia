@@ -884,10 +884,24 @@ while(app.bitacoras.length < 5){
     }
   }
 
-  renderPicker();
+   renderPicker();
   loadSource();
   renderAll();
 
+  document.getElementById("perfilNombre").value = app.perfil.personName;
+  document.getElementById("perfilEmail").value = app.perfil.personId;
+  document.getElementById("perfilEdad").value = app.perfil.age;
+  document.getElementById("perfilGenero").value = app.perfil.gender;
+
+  ["perfilNombre","perfilEmail","perfilEdad","perfilGenero"].forEach(id=>{
+    document.getElementById(id).addEventListener("input", ()=>{
+      app.perfil.personName = document.getElementById("perfilNombre").value;
+      app.perfil.personId = document.getElementById("perfilEmail").value;
+      app.perfil.age = document.getElementById("perfilEdad").value;
+      app.perfil.gender = document.getElementById("perfilGenero").value;
+      persist();
+    });
+  });
   document.querySelectorAll(".nav-button").forEach(btn=>{
     btn.addEventListener("click",()=>showView(btn.dataset.view));
   });
