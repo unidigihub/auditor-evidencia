@@ -1,0 +1,10 @@
+{
+  "name": "Auditor de Evidencia",
+  "short_name": "Auditor",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f7fb",
+  "theme_color": "#10253f",
+  "lang": "es"
+}
