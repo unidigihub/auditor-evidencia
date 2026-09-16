@@ -2314,15 +2314,19 @@ function cargarBitacora(){
   document.getElementById("bitDominiosIA").value = b.dominiosIA || "";
   document.getElementById("bitCadena").value = b.cadena;
   renderCadenasGuardadas(b.cadena);
-  document.getElementById("bitDominios").value = b.dominios;
+
+  const dominiosGuardados = Array.isArray(b.dominios) ? b.dominios : [b.dominios || ""];
+  for(let i = 1; i <= 5; i++){
+    document.getElementById("bitDominio" + i).value = dominiosGuardados[i-1] || "";
+  }
+
   document.getElementById("bitVerificado").checked = !!b.verificado;
-  document.getElementById("bitAprendizajes").value = b.aprendizajes;
   mostrarMensajeBitacora("", "");
 
   document.getElementById("bitacoraHeading") &&
     (document.getElementById("bitacoraHeading").textContent = "Bitácora · Fuente #" + (app.current+1));
 }
-    
+   
 function mostrarMensajeBitacora(texto, tipo){
   const contenedor = document.getElementById("bitacoraMensaje");
   if(!contenedor) return;
