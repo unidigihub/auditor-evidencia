@@ -2274,6 +2274,7 @@ function cargarBitacora(){
   document.getElementById("bitVocabulario").value = b.vocabulario;
   document.getElementById("bitDominiosIA").value = b.dominiosIA || "";
   document.getElementById("bitCadena").value = b.cadena;
+  renderCadenasGuardadas(b.cadena);
   document.getElementById("bitDominios").value = b.dominios;
   document.getElementById("bitVerificado").checked = !!b.verificado;
   document.getElementById("bitAprendizajes").value = b.aprendizajes;
