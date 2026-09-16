@@ -859,10 +859,31 @@
       <h3>3. Trazabilidad</h3>
       <p class="card-subtitle">Cierra tu bitácora dejando constancia de dónde llegaste y qué aprendiste.</p>
 
-                 <div class="field">
-        <label for="bitDominios">Dominio real de donde extrajiste el documento</label>
-        <input id="bitDominios" name="bitDominios" placeholder="Ej. banxico.org.mx">
-        <span class="hint">Este es el dominio que TÚ verificaste al abrir el PDF — compáralo contra lo que la IA te había sugerido arriba.</span>
+                   <div class="field">
+        <label>Dominios reales de donde extrajiste tus documentos (hasta 5 PDFs)</label>
+        <span class="hint" style="display:block;margin-bottom:8px">Estos son los dominios que TÚ verificaste al abrir cada PDF — compáralos contra lo que la IA te sugirió arriba. No necesitas llenar los 5 si encontraste menos documentos.</span>
+        <div class="grid">
+          <div class="field">
+            <label for="bitDominio1">PDF #1 — dominio real</label>
+            <input id="bitDominio1" placeholder="Ej. banxico.org.mx">
+          </div>
+          <div class="field">
+            <label for="bitDominio2">PDF #2 — dominio real</label>
+            <input id="bitDominio2" placeholder="Ej. inegi.org.mx">
+          </div>
+          <div class="field">
+            <label for="bitDominio3">PDF #3 — dominio real</label>
+            <input id="bitDominio3" placeholder="Ej. cepal.org">
+          </div>
+          <div class="field">
+            <label for="bitDominio4">PDF #4 — dominio real</label>
+            <input id="bitDominio4" placeholder="Opcional">
+          </div>
+        </div>
+        <div class="field">
+          <label for="bitDominio5">PDF #5 — dominio real</label>
+          <input id="bitDominio5" placeholder="Opcional">
+        </div>
       </div>
 
       <div class="field">
