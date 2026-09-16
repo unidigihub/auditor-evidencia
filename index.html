@@ -2494,6 +2494,13 @@ function initBitacora(){
     copiarTexto(texto, document.getElementById("btnCopiarPrompt"));
   });
   document.getElementById("btnGenerarCadenas").addEventListener("click", generarCadenasBooleanas);
+  document.getElementById("btnGenerarCadenas").addEventListener("click", generarCadenasBooleanas);
+
+  document.getElementById("bitContexto").addEventListener("change", (e) => {
+    document.getElementById("bitContextoOtroWrap").style.display =
+      e.target.value === "otro" ? "block" : "none";
+  });
+
   form.addEventListener("submit", e => {
     e.preventDefault();
 
