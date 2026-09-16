@@ -717,60 +717,119 @@
   <form id="bitacoraForm" autocomplete="off">
 
     <div class="card">
-      <h3>1. El Estratega (IA)</h3>
-      <p class="card-subtitle">Registra cómo usaste la IA para preparar tu búsqueda, antes de salir a buscar.</p>
+      <h3>🧠 Parte 1 · Generador del Prompt Exploratorio</h3>
+      <p class="card-subtitle">Arma un prompt riguroso eligiendo las piezas, en vez de escribirlo desde cero.</p>
 
-      <div class="field">
-        <label for="bitPrompt">Prompt exploratorio utilizado *</label>
-        <textarea id="bitPrompt" name="bitPrompt" placeholder="Ej. Pídele a la IA que te ayude a mapear el tema y proponer términos técnicos relacionados."></textarea>
-        <span class="hint">Copia el prompt que usaste tal cual lo escribiste.</span>
+      <div class="grid">
+        <div class="field">
+          <label for="bitRol">Rol de la IA</label>
+          <select id="bitRol">
+            <option value="Investigador Académico">Investigador Académico</option>
+            <option value="Auditor de Datos">Auditor de Datos</option>
+            <option value="Consultor Estratégico">Consultor Estratégico</option>
+          </select>
+          <span class="hint">¿Desde qué perspectiva quieres que responda?</span>
+        </div>
+        <div class="field">
+          <label for="bitTarea">Tarea</label>
+          <select id="bitTarea">
+            <option value="extraer los conceptos técnicos clave">Extraer conceptos técnicos</option>
+            <option value="identificar las metodologías utilizadas">Identificar metodologías</option>
+            <option value="sintetizar los hallazgos principales">Sintetizar hallazgos</option>
+          </select>
+          <span class="hint">¿Qué quieres que haga con el texto?</span>
+        </div>
+        <div class="field">
+          <label for="bitContexto">Contexto</label>
+          <select id="bitContexto">
+            <option value="un reporte de AgriTech">Reporte de AgriTech</option>
+            <option value="un análisis de FinTech">Análisis de FinTech</option>
+            <option value="un estudio de tendencias de empleabilidad">Tendencias de Empleabilidad</option>
+          </select>
+          <span class="hint">¿De qué tema trata tu investigación?</span>
+        </div>
+        <div class="field">
+          <label for="bitRestriccion">Restricción</label>
+          <select id="bitRestriccion">
+            <option value="No uses adjetivos calificativos; presenta tu respuesta en viñetas">No usar adjetivos y listar con viñetas</option>
+            <option value="Advierte explícitamente si el contenido es una opinión y no un hallazgo verificado">Advertir si es texto de opinión</option>
+          </select>
+          <span class="hint">¿Qué le quieres prohibir o exigir a la IA?</span>
+        </div>
       </div>
 
-            <div class="field">
-        <label for="bitVocabulario">Vocabulario hiper-técnico / traducciones descubiertas *</label>
-        <textarea id="bitVocabulario" name="bitVocabulario" placeholder="Ej. términos técnicos, siglas, nombres en otro idioma que descubriste gracias a la IA."></textarea>
-        <span class="hint">Estas palabras son tu materia prima para armar una búsqueda precisa.</span>
+      <div class="actions">
+        <button type="button" class="btn secondary" id="btnGenerarPrompt">✨ Generar Prompt</button>
+      </div>
+
+      <div class="field">
+        <label for="bitPrompt">Prompt exploratorio generado *</label>
+        <textarea id="bitPrompt" name="bitPrompt" readonly placeholder="Presiona 'Generar Prompt' arriba para armarlo automáticamente."></textarea>
+        <span class="hint">Cópialo y pégaselo tal cual a tu IA de confianza.</span>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn secondary" id="btnCopiarPrompt">📋 Copiar Prompt</button>
       </div>
 
       <div class="field">
         <label for="bitDominiosIA">Dominios/instituciones sugeridos por la IA</label>
         <input id="bitDominiosIA" name="bitDominiosIA" placeholder="Ej. banxico.org.mx, inegi.org.mx, cepal.org">
-        <span class="hint">Esta es tu hipótesis inicial (lo que la IA te propuso), todavía sin comprobar. La compararás más abajo contra lo que realmente encontraste.</span>
+        <span class="hint">Esta es tu hipótesis inicial (lo que la IA te propuso), todavía sin comprobar.</span>
       </div>
     </div>
-    
+
     <div class="card">
-  <h3>2. La Extracción (Buscador)</h3>
-  <p class="card-subtitle">Arma tu fórmula con las piezas del método, o escríbela tú mismo si ya sabes cómo.</p>
+      <h3>🧮 Parte 2 · Motor de Extracción Booleana</h3>
+      <p class="card-subtitle">Convierte lo que te respondió la IA en fórmulas exactas para Google.</p>
 
-  <div class="notice">
-    <strong>Tip:</strong> no cierres la pestaña de tu IA todavía — la vas a necesitar para copiar tu vocabulario técnico.
-  </div>
+      <div class="notice">
+        <strong>Tip:</strong> pega aquí los términos técnicos que la IA te devolvió en su respuesta.
+      </div>
 
-  <div class="grid">
-    <div class="field">
-      <label for="bitDominioConstructor">Dominio institucional</label>
-      <input id="bitDominioConstructor" placeholder="Ej. banxico.org.mx">
-      <span class="hint">Sin "https://" ni "www.", solo el dominio.</span>
+      <div class="field">
+        <label for="bitVocabulario">Vocabulario técnico (separado por comas) *</label>
+        <textarea id="bitVocabulario" name="bitVocabulario" placeholder="Ej. inclusión financiera, agricultura de precisión"></textarea>
+        <span class="hint">Se generará una cadena de búsqueda distinta por cada término que escribas aquí.</span>
+      </div>
+
+      <div class="field">
+        <label>Buscadores especializados (dominios)</label>
+        <div class="checks">
+          <label class="check"><input type="checkbox" class="bit-dominio" value="site:edu"> Universidades (site:edu)</label>
+          <label class="check"><input type="checkbox" class="bit-dominio" value="site:org"> Instituciones (site:org)</label>
+          <label class="check"><input type="checkbox" class="bit-dominio" value="site:redalyc.org"> Redalyc (site:redalyc.org)</label>
+          <label class="check"><input type="checkbox" class="bit-dominio" value="site:gov OR site:gob.mx"> Gobierno (site:gov / site:gob.mx)</label>
+        </div>
+        <span class="hint">Marca al menos uno. Si marcas varios, se combinan con "OR".</span>
+      </div>
+
+      <div class="field">
+        <label>Excluir ruido comercial (opcional)</label>
+        <div class="checks">
+          <label class="check"><input type="checkbox" class="bit-exclusion" value="-curso"> -curso</label>
+          <label class="check"><input type="checkbox" class="bit-exclusion" value="-ventas"> -ventas</label>
+          <label class="check"><input type="checkbox" class="bit-exclusion" value="-marketing"> -marketing</label>
+          <label class="check"><input type="checkbox" class="bit-exclusion" value="-diplomado"> -diplomado</label>
+        </div>
+        <span class="hint">Estas palabras se restarán de tu búsqueda para filtrar cursos y ventas.</span>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn secondary" id="btnGenerarCadenas">🧮 Generar Cadenas Booleanas</button>
+      </div>
+
+      <div id="bitCadenasResultado" class="cadenas-lista">
+        <p class="hint">Aún no has generado ninguna cadena. Completa el vocabulario y los dominios de arriba.</p>
+      </div>
+
+      <div class="field" style="margin-top:14px">
+        <label for="bitCadena">Cadenas guardadas en tu bitácora *</label>
+        <textarea id="bitCadena" name="bitCadena" readonly placeholder="Se llenan solas al presionar 'Generar Cadenas Booleanas'."></textarea>
+        <span class="hint">Esto es lo que se guarda como tu evidencia de búsqueda. Debe incluir site:, filetype:pdf y tu palabra entre comillas.</span>
+      </div>
     </div>
-    <div class="field">
-      <label for="bitPalabraConstructor">Palabra clave técnica</label>
-      <input id="bitPalabraConstructor" placeholder="Ej. inclusión financiera">
-      <span class="hint">Se le agregarán las comillas automáticamente.</span>
-    </div>
-  </div>
-
-  <div class="actions">
-    <button type="button" class="btn secondary" id="btnGenerarCadena">🔧 Generar fórmula automáticamente</button>
-  </div>
-
-  <div class="field">
-    <label for="bitCadena">Cadena de búsqueda exacta con operadores booleanos *</label>
-    <input id="bitCadena" name="bitCadena" placeholder='Ej. site:gob.mx filetype:pdf "palabra clave"'>
-    <span class="hint">Se llena sola al presionar el botón de arriba, o puedes escribirla tú mismo. Debe incluir site:, filetype:pdf y tu palabra entre comillas.</span>
-  </div>
-</div>
-    
+ 
     <div class="card">
       <h3>3. Trazabilidad</h3>
       <p class="card-subtitle">Cierra tu bitácora dejando constancia de dónde llegaste y qué aprendiste.</p>
