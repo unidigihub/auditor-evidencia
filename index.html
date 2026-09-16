@@ -2438,7 +2438,16 @@ function initBitacora(){
 
   cargarBitacora();
 
-  document.getElementById("btnGenerarCadena").addEventListener("click", generarCadenaBusqueda);
+  document.getElementById("btnGenerarPrompt").addEventListener("click", generarPromptExploratorio);
+  document.getElementById("btnCopiarPrompt").addEventListener("click", () => {
+    const texto = document.getElementById("bitPrompt").value.trim();
+    if(!texto){
+      alert("Primero genera el prompt con el botón de arriba.");
+      return;
+    }
+    copiarTexto(texto, document.getElementById("btnCopiarPrompt"));
+  });
+  document.getElementById("btnGenerarCadenas").addEventListener("click", generarCadenasBooleanas);
   form.addEventListener("submit", e => {
     e.preventDefault();
 
