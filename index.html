@@ -739,15 +739,37 @@
           </select>
           <span class="hint">¿Qué quieres que haga con el texto?</span>
         </div>
-        <div class="field">
+               <div class="field">
           <label for="bitContexto">Contexto</label>
           <select id="bitContexto">
-            <option value="un reporte de AgriTech">Reporte de AgriTech</option>
-            <option value="un análisis de FinTech">Análisis de FinTech</option>
-            <option value="un estudio de tendencias de empleabilidad">Tendencias de Empleabilidad</option>
+            <option value="un reporte de agricultura y AgriTech">Agricultura / AgriTech</option>
+            <option value="un análisis de finanzas y FinTech">Finanzas / FinTech</option>
+            <option value="un estudio de empleabilidad y recursos humanos">Empleabilidad / Recursos Humanos</option>
+            <option value="un reporte del sector salud">Salud</option>
+            <option value="un análisis del sector educativo">Educación</option>
+            <option value="un reporte de tecnología y transformación digital">Tecnología / TI</option>
+            <option value="un análisis del sector energético">Energía</option>
+            <option value="un reporte de medio ambiente y sostenibilidad">Medio Ambiente / Sostenibilidad</option>
+            <option value="un análisis de comercio y retail">Comercio / Retail</option>
+            <option value="un reporte del sector manufactura e industria">Manufactura / Industria</option>
+            <option value="un análisis de logística y cadena de suministro">Logística / Cadena de Suministro</option>
+            <option value="un reporte de construcción e infraestructura">Construcción / Infraestructura</option>
+            <option value="un análisis de turismo y hotelería">Turismo / Hotelería</option>
+            <option value="un reporte de políticas públicas y gobierno">Gobierno / Políticas Públicas</option>
+            <option value="un análisis jurídico o de derecho">Derecho / Legal</option>
+            <option value="un reporte de marketing y consumo">Marketing / Consumo</option>
+            <option value="un estudio de ciencias sociales">Ciencias Sociales</option>
+            <option value="otro">Otro (especifícalo abajo)</option>
           </select>
-          <span class="hint">¿De qué tema trata tu investigación?</span>
+          <span class="hint">¿De qué tema trata tu investigación? Si no aparece tu área, elige "Otro".</span>
         </div>
+
+        <div class="field" id="bitContextoOtroWrap" style="display:none">
+          <label for="bitContextoOtro">Especifica tu área o sector</label>
+          <input id="bitContextoOtro" placeholder="Ej. minería, industria farmacéutica, videojuegos...">
+          <span class="hint">Escribe el nombre de tu sector o área de estudio.</span>
+        </div>
+ 
         <div class="field">
           <label for="bitRestriccion">Restricción</label>
           <select id="bitRestriccion">
