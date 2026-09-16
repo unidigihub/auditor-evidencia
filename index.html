@@ -2497,16 +2497,15 @@ function initBitacora(){
   form.addEventListener("submit", e => {
     e.preventDefault();
 
-          const datos = {
+           const datos = {
       prompt: document.getElementById("bitPrompt").value,
       vocabulario: document.getElementById("bitVocabulario").value,
       dominiosIA: document.getElementById("bitDominiosIA").value,
       cadena: document.getElementById("bitCadena").value,
-      dominios: document.getElementById("bitDominios").value,
-      verificado: document.getElementById("bitVerificado").checked,
-      aprendizajes: document.getElementById("bitAprendizajes").value
+      dominios: [1,2,3,4,5].map(n => document.getElementById("bitDominio" + n).value.trim()),
+      verificado: document.getElementById("bitVerificado").checked
     };
-
+    
     const errorEco = validarReglaEco(datos);
     if(errorEco){
       alert(errorEco);
