@@ -2295,35 +2295,104 @@ function mostrarMensajeBitacora(texto, tipo){
     : "";
 }
 
-// Regla de Umberto Eco: sin operadores estrictos combinados,
-// tu búsqueda trae rumores y blogs, no fuentes de primera mano.
-// Exige "site:" Y "filetype:pdf" juntos, tal como se enseña en la
-// fórmula de 3 piezas (dominio + formato + palabra entre comillas).
-// Limpia lo que el estudiante pegue como dominio: quita "https://",
-// "www." y cualquier cosa después de la primera "/", para que quede
-// solo el dominio limpio (ej. "banxico.org.mx").
-function limpiarDominio(valor){
-  return valor
-    .trim()
-    .replace(/^https?:\/\//i, "")
-    .replace(/^www\./i, "")
-    .replace(/\/.*$/, "");
+// Parte 1: arma un prompt exploratorio uniendo las 4 selecciones
+// del usuario en un párrafo coherente para pegarlo en cualquier IA.
+function generarPromptExploratorio(){
+  const rol = document.getElementById("bitRol").value;
+  const tarea = document.getElementById("bitTarea").value;
+  const contexto = document.getElementById("bitContexto").value;
+  const restriccion = document.getElementById("bitRestriccion").value;
+
+  const prompt = `Actúa como un ${rol}. Tu tarea es ${tarea}, en el contexto de ${contexto}. Restricción: ${restriccion}.`;
+
+  document.getElementById("bitPrompt").value = prompt;
+  mostrarMensajeBitacora("", "");
 }
 
-function generarCadenaBusqueda(){
-  const dominio = limpiarDominio(document.getElementById("bitDominioConstructor").value);
-  const palabra = document.getElementById("bitPalabraConstructor").value.trim();
+// Copia cualquier texto al portapapeles y da una señal visual breve
+// en el botón que se presionó (en vez de un alert(), que es molesto
+// en celular).
+function copiarTexto(texto, boton){
+  if(!boton.dataset.original){
+    boton.dataset.original = boton.textContent;
+  }
+  const restaurar = () => { boton.textContent = boton.dataset.original; };
 
-  if(!dominio || !palabra){
-    alert("Para generar la fórmula automáticamente necesitas escribir tanto el dominio institucional como la palabra clave.");
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(texto).then(() => {
+      boton.textContent = "✅ Copiado";
+      setTimeout(restaurar, 1500);
+    }).catch(() => {
+      alert("No se pudo copiar automáticamente. Selecciona y copia el texto manualmente.");
+    });
+  } else {
+    alert("No se pudo copiar automáticamente. Selecciona y copia el texto manualmente.");
+  }
+}
+
+// Dibuja la lista de cadenas ya generadas (o guardadas previamente)
+// con su botón de copiar individual.
+function renderCadenasGuardadas(cadenaTexto){
+  const contenedor = document.getElementById("bitCadenasResultado");
+  if(!contenedor) return;
+
+  const lineas = (cadenaTexto || "").split("\n").map(l => l.trim()).filter(Boolean);
+
+  if(!lineas.length){
+    contenedor.innerHTML = '<p class="hint">Aún no has generado ninguna cadena. Completa el vocabulario y los dominios de arriba.</p>';
     return;
   }
 
-  const cadena = `site:${dominio} filetype:pdf "${palabra}"`;
-  document.getElementById("bitCadena").value = cadena;
+  contenedor.innerHTML = lineas.map(cadena => `
+    <div class="cadena-item">
+      <code>${escapeHTML(cadena)}</code>
+      <button type="button" class="btn secondary btn-copiar-cadena" data-cadena="${escapeHTML(cadena)}">📋 Copiar</button>
+    </div>
+  `).join("");
+
+  contenedor.querySelectorAll(".btn-copiar-cadena").forEach(btn => {
+    btn.addEventListener("click", () => copiarTexto(btn.dataset.cadena, btn));
+  });
+}
+
+// Parte 2: toma el vocabulario técnico (separado por comas) y genera
+// una fórmula booleana distinta por cada término, combinando los
+// dominios elegidos con OR y restando las palabras de exclusión.
+function generarCadenasBooleanas(){
+  const terminos = document.getElementById("bitVocabulario").value
+    .split(",")
+    .map(t => t.trim())
+    .filter(Boolean);
+
+  const dominios = [...document.querySelectorAll(".bit-dominio:checked")].map(el => el.value);
+  const exclusiones = [...document.querySelectorAll(".bit-exclusion:checked")].map(el => el.value);
+
+  const contenedor = document.getElementById("bitCadenasResultado");
+
+  if(!terminos.length){
+    contenedor.innerHTML = '<div class="notice" style="background:var(--red-bg);color:var(--red)">⚠️ Escribe al menos un término técnico (separado por comas) en "Vocabulario técnico" antes de generar las cadenas.</div>';
+    document.getElementById("bitCadena").value = "";
+    return;
+  }
+
+  if(!dominios.length){
+    contenedor.innerHTML = '<div class="notice" style="background:var(--red-bg);color:var(--red)">⚠️ Selecciona al menos un buscador especializado (site:edu, site:org, etc.) antes de generar las cadenas.</div>';
+    document.getElementById("bitCadena").value = "";
+    return;
+  }
+
+  const bloqueDominios = "(" + dominios.join(" OR ") + ")";
+  const bloqueExclusiones = exclusiones.join(" ");
+
+  const cadenas = terminos.map(termino =>
+    `${bloqueDominios} filetype:pdf "${termino}" ${bloqueExclusiones}`.trim().replace(/\s+/g, " ")
+  );
+
+  document.getElementById("bitCadena").value = cadenas.join("\n");
+  renderCadenasGuardadas(cadenas.join("\n"));
   mostrarMensajeBitacora("", "");
 }
-    
+       
 function validarReglaEco(datos){
   const cadena = datos.cadena.toLowerCase();
   const tieneSite = cadena.includes("site:");
