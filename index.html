@@ -2344,7 +2344,10 @@ function mostrarMensajeBitacora(texto, tipo){
 function generarPromptExploratorio(){
   const rol = document.getElementById("bitRol").value;
   const tarea = document.getElementById("bitTarea").value;
-  const contexto = document.getElementById("bitContexto").value;
+  const contextoSeleccionado = document.getElementById("bitContexto").value;
+  const contexto = contextoSeleccionado === "otro"
+    ? `un tema relacionado con ${document.getElementById("bitContextoOtro").value.trim() || "tu área de estudio"}`
+    : contextoSeleccionado;
   const restriccion = document.getElementById("bitRestriccion").value;
 
   const prompt = `Actúa como un ${rol}. Tu tarea es ${tarea}, en el contexto de ${contexto}. Restricción: ${restriccion}.`;
@@ -2352,7 +2355,7 @@ function generarPromptExploratorio(){
   document.getElementById("bitPrompt").value = prompt;
   mostrarMensajeBitacora("", "");
 }
-
+    
 // Copia cualquier texto al portapapeles y da una señal visual breve
 // en el botón que se presionó (en vez de un alert(), que es molesto
 // en celular).
