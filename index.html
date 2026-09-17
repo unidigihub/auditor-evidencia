@@ -823,12 +823,22 @@
         <strong>Tip:</strong> pega aquí los términos técnicos que la IA te devolvió en su respuesta.
       </div>
 
-      <div class="field">
+           <div class="field">
         <label for="bitVocabulario">Vocabulario técnico (separado por comas) *</label>
         <textarea id="bitVocabulario" name="bitVocabulario" placeholder="Ej. inclusión financiera, agricultura de precisión"></textarea>
         <span class="hint">Se generará una cadena de búsqueda distinta por cada término que escribas aquí.</span>
       </div>
 
+      <div class="field">
+        <label for="bitDominiosExtra">Dominios sugeridos por la IA en la Parte 1 (opcional)</label>
+        <textarea id="bitDominiosExtra" placeholder="Ej. banxico.org.mx, inegi.org.mx, cepal.org"></textarea>
+        <span class="hint">Sepáralos por comas. Se sumarán a los buscadores que marques abajo, combinados con "OR".</span>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn light" id="btnUsarDominiosIA">↩️ Usar los que puse en la Parte 1</button>
+      </div>
+      
           <div class="field">
         <label>Buscadores especializados (dominios)</label>
         <div class="checks">
