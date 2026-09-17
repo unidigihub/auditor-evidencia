@@ -1171,6 +1171,25 @@ while(app.bitacoras.length < 5){
     btn.addEventListener("click",()=>showView(btn.dataset.view));
   });
 
+  document.getElementById("pdfArchivoInput").addEventListener("change", (e) => {
+    const archivo = e.target.files[0];
+    const hint = document.getElementById("pdfArchivoHint");
+    if(!archivo){
+      document.getElementById("pdfArchivoNombre").value = "";
+      hint.textContent = "Este archivo no se sube a ningún servidor: solo queda registrado su nombre, como evidencia de que lo revisaste.";
+      return;
+    }
+    if(!/\.pdf$/i.test(archivo.name)){
+      alert("Solo se aceptan archivos con extensión .pdf");
+      e.target.value = "";
+      document.getElementById("pdfArchivoNombre").value = "";
+      return;
+    }
+    document.getElementById("pdfArchivoNombre").value = archivo.name;
+    hint.textContent = "Archivo cargado: " + archivo.name;
+  });
+
+    document.getElementById("auditForm").addEventListener("submit",e=>{
     document.getElementById("auditForm").addEventListener("submit",e=>{
     e.preventDefault();
     if(!perfilCompleto()) return;
