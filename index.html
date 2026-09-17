@@ -1236,12 +1236,16 @@ while(app.bitacoras.length < 5){
   renderSingleResult();
 }
     
-    function loadSource(){
+       function loadSource(){
       const s=app.sources[app.current];
       const form=document.getElementById("auditForm");
 
       [...form.elements].forEach(el=>{
         if(!el.name || el.type==="checkbox") return;
+        if(el.type==="radio"){
+          el.checked = el.value === (s[el.name] ?? "");
+          return;
+        }
         el.value=s[el.name] ?? "";
       });
 
@@ -1251,6 +1255,18 @@ while(app.bitacoras.length < 5){
           checkbox.checked=values.includes(checkbox.value);
         });
       });
+
+      const epiCheckbox = document.getElementById("epiSinComprobacion");
+      if(epiCheckbox) epiCheckbox.checked = !!s.epiSinComprobacion;
+
+      const pdfInput = document.getElementById("pdfArchivoInput");
+      if(pdfInput) pdfInput.value = "";
+      const pdfHint = document.getElementById("pdfArchivoHint");
+      if(pdfHint){
+        pdfHint.textContent = s.pdfArchivoNombre
+          ? "Archivo ya registrado: " + s.pdfArchivoNombre + " (para cambiarlo, vuelve a seleccionarlo arriba)"
+          : "Este archivo no se sube a ningún servidor: solo queda registrado su nombre, como evidencia de que lo revisaste.";
+      }
 
       document.getElementById("sourceHeading").textContent=
         "Fuente #"+(app.current+1);
@@ -1262,7 +1278,7 @@ while(app.bitacoras.length < 5){
 
       status.className="badge "+(s.audit?s.audit.color:"black");
     }
-
+    
     function collectForm(){
       const form=document.getElementById("auditForm");
       const s=app.sources[app.current];
