@@ -379,10 +379,27 @@
 
           <div class="card">
             <h3>1. Identifica la afirmación y la fuente</h3>
-            <p class="card-subtitle">Copia la afirmación exacta. No audites un tema general.</p>
+                      <p class="card-subtitle">Copia la afirmación exacta. No audites un tema general.</p>
 
             <div class="field">
-              <label>Título de la publicación *</label>
+              <label>¿Qué tipo de PDF es?</label>
+              <div class="checks">
+                <label class="check"><input type="radio" name="pdfTipo" value="nativo"> PDF Nativo (texto embebido)</label>
+                <label class="check"><input type="radio" name="pdfTipo" value="ocr"> PDF por OCR (Reconocimiento Óptico)</label>
+                <label class="check"><input type="radio" name="pdfTipo" value="escaneado"> PDF escaneado (imagen pura)</label>
+              </div>
+              <span class="hint">Este sistema solo acepta <strong>PDF Nativo</strong>. Si tu PDF es OCR o escaneado, el texto citado no se puede verificar con certeza — busca la versión nativa del documento.</span>
+            </div>
+
+            <div class="field">
+              <label>Cargar el PDF</label>
+              <input type="file" id="pdfArchivoInput" accept="application/pdf">
+              <input type="hidden" name="pdfArchivoNombre" id="pdfArchivoNombre">
+              <span class="hint" id="pdfArchivoHint">Este archivo no se sube a ningún servidor: solo queda registrado su nombre, como evidencia de que lo revisaste.</span>
+            </div>
+
+            <div class="field">
+              <label>Título de la publicación *</label>      
               <input name="title" required>
             </div>
 
