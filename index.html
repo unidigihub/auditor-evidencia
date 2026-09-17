@@ -2535,6 +2535,11 @@ function initBitacora(){
     copiarTexto(texto, document.getElementById("btnCopiarPrompt"));
   });
   document.getElementById("btnGenerarCadenas").addEventListener("click", generarCadenasBooleanas);
+  document.getElementById("btnUsarDominiosIA").addEventListener("click", () => {
+    document.getElementById("bitDominiosExtra").value = document.getElementById("bitDominiosIA").value;
+  });
+
+  document.getElementById("bitContexto").addEventListener("change", (e) => { 
   document.getElementById("bitContexto").addEventListener("change", (e) => {
     document.getElementById("bitContextoOtroWrap").style.display =
       e.target.value === "otro" ? "block" : "none";
