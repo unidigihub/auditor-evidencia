@@ -1189,17 +1189,32 @@ while(app.bitacoras.length < 5){
     hint.textContent = "Archivo cargado: " + archivo.name;
   });
 
-    document.getElementById("auditForm").addEventListener("submit",e=>{
-    document.getElementById("auditForm").addEventListener("submit",e=>{
+     document.getElementById("auditForm").addEventListener("submit",e=>{
     e.preventDefault();
     if(!perfilCompleto()) return;
     collectForm();
-    app.sources[app.current].audit = auditSource(app.sources[app.current]);
+
+    const s = app.sources[app.current];
+
+    const errorPDF = validarTipoPDF(s);
+    if(errorPDF){
+      alert(errorPDF);
+      return;
+    }
+
+    const errorEpistemologo = validarEpistemologo(s);
+    if(errorEpistemologo){
+      alert(errorEpistemologo);
+      return;
+    }
+
+    s.audit = auditSource(s);
     persist();
     renderAll();
     renderSingleResult();
     renderPicker();
   });
+     
   document.getElementById("btnReiniciar").addEventListener("click",()=>{
     reiniciarAuditoria(true);
   });
