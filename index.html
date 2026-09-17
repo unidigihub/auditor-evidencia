@@ -2745,8 +2745,7 @@ function initBitacora(){
   document.getElementById("btnUsarDominiosIA").addEventListener("click", () => {
     document.getElementById("bitDominiosExtra").value = document.getElementById("bitDominiosIA").value;
   });
-
-  document.getElementById("bitContexto").addEventListener("change", (e) => { 
+  
   document.getElementById("bitContexto").addEventListener("change", (e) => {
     document.getElementById("bitContextoOtroWrap").style.display =
       e.target.value === "otro" ? "block" : "none";
