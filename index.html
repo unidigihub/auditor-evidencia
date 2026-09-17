@@ -2022,7 +2022,7 @@ function recordsForExport(){
     auditId:s.audit.auditId
   }));
 }   
-      async function closeAuditAndSend(){
+           async function closeAuditAndSend(){
       if(!perfilCompleto()) return;
       collectForm();
       const sourcesWithData=app.sources.filter(
@@ -2034,11 +2034,22 @@ function recordsForExport(){
         return;
       }
 
-      app.sources.forEach(s=>{
+      for(let i=0; i<app.sources.length; i++){
+        const s = app.sources[i];
         if(s.title||s.claim||s.url){
+          const errorPDF = validarTipoPDF(s);
+          if(errorPDF){
+            alert("Fuente #" + (i+1) + ": " + errorPDF);
+            return;
+          }
+          const errorEpistemologo = validarEpistemologo(s);
+          if(errorEpistemologo){
+            alert("Fuente #" + (i+1) + ": " + errorEpistemologo);
+            return;
+          }
           s.audit=auditSource(s);
         }
-      });
+      }
 
       persist();
       renderAll();
@@ -2047,7 +2058,7 @@ function recordsForExport(){
 
       await sendResults(true);
     }
-
+    
   async function sendResults(isClosing=false){
   collectForm();
 
