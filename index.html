@@ -1287,15 +1287,17 @@ while(app.bitacoras.length < 5){
         s[key]=String(value).trim();
       });
 
-      document.querySelectorAll("[data-group]").forEach(group=>{
+           document.querySelectorAll("[data-group]").forEach(group=>{
         s[group.dataset.group]=[
           ...group.querySelectorAll("input:checked")
         ].map(input=>input.value);
       });
 
+      s.epiSinComprobacion = document.getElementById("epiSinComprobacion").checked;
+
       persist();
     }
-
+    
     function saveDraft(){
       collectForm();
       alert("Borrador guardado en este dispositivo.");
