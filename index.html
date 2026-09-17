@@ -2434,15 +2434,25 @@ function renderCadenasGuardadas(cadenaTexto){
 }
 
 // Parte 2: toma el vocabulario técnico (separado por comas) y genera
-// una fórmula booleana distinta por cada término, combinando los
-// dominios elegidos con OR y restando las palabras de exclusión.
+// una fórmula booleana distinta por cada término. Combina los dominios
+// marcados con checkbox MÁS los que el usuario haya pegado desde la
+// Parte 1 en "bitDominiosExtra", todos unidos con OR.
 function generarCadenasBooleanas(){
   const terminos = document.getElementById("bitVocabulario").value
     .split(",")
     .map(t => t.trim())
     .filter(Boolean);
 
-  const dominios = [...document.querySelectorAll(".bit-dominio:checked")].map(el => el.value);
+  const dominiosCheckeados = [...document.querySelectorAll(".bit-dominio:checked")].map(el => el.value);
+
+  const dominiosExtra = document.getElementById("bitDominiosExtra").value
+    .split(",")
+    .map(d => d.trim())
+    .filter(Boolean)
+    .map(d => d.replace(/^https?:\/\//i, "").replace(/^www\./i, "").replace(/\/.*$/, ""))
+    .map(d => `site:${d}`);
+
+  const dominios = [...dominiosCheckeados, ...dominiosExtra];
   const exclusiones = [...document.querySelectorAll(".bit-exclusion:checked")].map(el => el.value);
 
   const contenedor = document.getElementById("bitCadenasResultado");
@@ -2454,7 +2464,7 @@ function generarCadenasBooleanas(){
   }
 
   if(!dominios.length){
-    contenedor.innerHTML = '<div class="notice" style="background:var(--red-bg);color:var(--red)">⚠️ Selecciona al menos un buscador especializado (site:edu, site:org, etc.) antes de generar las cadenas.</div>';
+    contenedor.innerHTML = '<div class="notice" style="background:var(--red-bg);color:var(--red)">⚠️ Selecciona al menos un buscador especializado, o escribe algún dominio sugerido por la IA, antes de generar las cadenas.</div>';
     document.getElementById("bitCadena").value = "";
     return;
   }
@@ -2470,7 +2480,7 @@ function generarCadenasBooleanas(){
   renderCadenasGuardadas(cadenas.join("\n"));
   mostrarMensajeBitacora("", "");
 }
-       
+   
 function validarReglaEco(datos){
   const cadena = datos.cadena.toLowerCase();
   const tieneSite = cadena.includes("site:");
