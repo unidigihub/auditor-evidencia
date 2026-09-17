@@ -605,14 +605,50 @@
               </select>
             </div>
 
-            <div class="field">
+                      <div class="field">
               <label>Recomendación</label>
               <textarea name="recommendation" placeholder="Próximo paso de investigación o uso responsable."></textarea>
             </div>
           </div>
 
+          <div class="card">
+            <h3>🔬 Veredicto del Epistemólogo (Bunge)</h3>
+            <p class="card-subtitle">Aplica el método fáctico: describe solo lo que el texto prueba, con su página exacta. Nada de adjetivos ni lenguaje comercial.</p>
+
+            <div class="notice">
+              📌 <strong>Reglas de este veredicto:</strong> no resumas intenciones del autor, cero adjetivos calificativos, no conviertas correlaciones en causalidades absolutas. Si la afirmación central no tiene prueba empírica en el texto, decláralo como "hipótesis sin comprobación".
+            </div>
+
+            <div class="field">
+              <label>Verdad fáctica *</label>
+              <textarea name="epiVerdad" placeholder="Nombra exclusivamente la proposición central demostrada en el PDF, en lenguaje neutro."></textarea>
+              <span class="hint">Sin adjetivos calificativos ni lenguaje comercial (ni "excelente", ni "alarmante", ni "revolucionario").</span>
+            </div>
+
+            <div class="field">
+              <label>Justificación *</label>
+              <textarea name="epiJustificacion" placeholder='Ej. Tabla 3, variable "ingreso per cápita", p. 24.'></textarea>
+              <span class="hint">Nombra la prueba material, tabla o variable controlada. Debe incluir el número de página (ej. "p. 24"), salvo que marques la casilla de abajo.</span>
+            </div>
+
+            <label class="check" style="margin-bottom:14px">
+              <input type="checkbox" name="epiSinComprobacion" id="epiSinComprobacion">
+              La afirmación central NO tiene prueba empírica en el texto (hipótesis sin comprobación)
+            </label>
+
+            <div class="field">
+              <label>Objetividad *</label>
+              <textarea name="epiObjetividad" placeholder="Reporta si el autor exagera sus resultados o muestra sesgos. Si no encontraste ninguno, dilo explícitamente."></textarea>
+            </div>
+
+            <div class="field">
+              <label>Método *</label>
+              <textarea name="epiMetodo" placeholder="Enlista las limitaciones metodológicas que el propio texto declara (muestra pequeña, falta de grupo de control, etc.)."></textarea>
+            </div>
+          </div>
+
           <div class="actions">
-            <button type="submit" class="btn primary">Auditar fuente</button>
+            <button type="submit" class="btn primary">Auditar fuente</button>   
             <button type="button" class="btn secondary" onclick="auditAll()">Auditar las 5 fuentes</button>
             <button type="button" class="btn light" onclick="saveDraft()">Guardar borrador</button>
           </div>
