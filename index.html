@@ -720,7 +720,7 @@
       <h3>🧠 Parte 1 · Generador del Prompt Exploratorio</h3>
       <p class="card-subtitle">Arma un prompt riguroso eligiendo las piezas, en vez de escribirlo desde cero.</p>
 
-      <div class="grid">
+           <div class="grid">
         <div class="field">
           <label for="bitRol">Rol de la IA</label>
           <select id="bitRol">
@@ -733,9 +733,9 @@
         <div class="field">
           <label for="bitTarea">Tarea</label>
           <select id="bitTarea">
-            <option value="extraer los conceptos técnicos clave">Extraer conceptos técnicos</option>
-            <option value="identificar las metodologías utilizadas">Identificar metodologías</option>
-            <option value="sintetizar los hallazgos principales">Sintetizar hallazgos</option>
+            <option value="recolectar datos de páginas web, bases de datos y documentos de forma automática">Recolectar datos automáticamente</option>
+            <option value="estructurar grandes volúmenes de texto, resumir ideas y encontrar patrones utilizando inteligencia artificial">Estructurar y resumir con IA</option>
+            <option value="verificar que la información sea confiable, detectar sesgos, noticias falsas o errores estadísticos">Verificar confiabilidad y sesgos</option>
           </select>
           <span class="hint">¿Qué quieres que haga con el texto?</span>
         </div>
@@ -769,17 +769,31 @@
           <input id="bitContextoOtro" placeholder="Ej. minería, industria farmacéutica, videojuegos...">
           <span class="hint">Escribe el nombre de tu sector o área de estudio.</span>
         </div>
- 
+
         <div class="field">
-          <label for="bitRestriccion">Restricción</label>
-          <select id="bitRestriccion">
-            <option value="No uses adjetivos calificativos; presenta tu respuesta en viñetas">No usar adjetivos y listar con viñetas</option>
-            <option value="Advierte explícitamente si el contenido es una opinión y no un hallazgo verificado">Advertir si es texto de opinión</option>
-          </select>
-          <span class="hint">¿Qué le quieres prohibir o exigir a la IA?</span>
+          <label for="bitTema">¿Sobre qué quieres que investigue exactamente?</label>
+          <textarea id="bitTema" placeholder="Ej. el impacto de la inteligencia artificial en la banca rural de México entre 2020 y 2025"></textarea>
+          <span class="hint">Sé específico: esto es lo que la IA va a investigar dentro del contexto que elegiste arriba.</span>
         </div>
       </div>
 
+      <div class="field">
+        <label>Restricciones (marca todas las que quieras aplicar)</label>
+        <div class="checks">
+          <label class="check"><input type="checkbox" class="bit-restriccion" value="No uses adjetivos calificativos; presenta tu respuesta en viñetas"> No usar adjetivos y listar con viñetas</label>
+          <label class="check"><input type="checkbox" class="bit-restriccion" value="Advierte explícitamente si el contenido es una opinión y no un hallazgo verificado"> Advertir si es texto de opinión</label>
+          <label class="check"><input type="checkbox" class="bit-restriccion" value="Usa exclusivamente jerga hiper-técnica y terminología especializada del área, sin simplificar los términos"> Solo jerga hiper-técnica</label>
+          <label class="check"><input type="checkbox" class="bit-restriccion" value="No uses lenguaje de divulgación general ni expliques términos como si fuera para principiantes"> Prohibido el lenguaje de divulgación</label>
+          <label class="check"><input type="checkbox" class="bit-restriccion" value="Ignora por completo cualquier contenido con fines de marketing, promoción o venta"> Tolerancia cero al marketing</label>
+          <label class="check"><input type="checkbox" class="bit-restriccion" value="No menciones ni promociones marcas comerciales o nombres de productos específicos"> Bloqueo de marcas</label>
+          <label class="check"><input type="checkbox" class="bit-restriccion" value="Presenta los datos en formato crudo (tablas, cifras o listas), sin narrativa ni interpretación"> Formato de datos crudos</label>
+          <label class="check"><input type="checkbox" class="bit-restriccion" value="Conserva las citas y términos clave en su idioma original, sin traducir"> Idioma original</label>
+          <label class="check"><input type="checkbox" class="bit-restriccion" value="Prioriza exclusivamente fuentes de instituciones reconocidas (universidades, organismos oficiales o gubernamentales)"> Exclusividad institucional</label>
+          <label class="check"><input type="checkbox" class="bit-restriccion" value="Considera únicamente documentos en formatos seguros y verificables (PDF, DOC, XLS), evitando páginas sin archivo descargable"> Filtro de extensiones seguras</label>
+        </div>
+        <span class="hint">¿Qué le quieres prohibir o exigir a la IA? Puedes marcar varias.</span>
+      </div>
+   
       <div class="actions">
         <button type="button" class="btn secondary" id="btnGenerarPrompt">✨ Generar Prompt</button>
       </div>
