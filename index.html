@@ -1322,6 +1322,75 @@ while(app.bitacoras.length < 5){
       alert("Borrador guardado en este dispositivo.");
     }
 
+    // Candado de tipo de PDF: solo se acepta el nativo, porque es el
+    // único donde el texto citado se puede verificar con certeza.
+    function validarTipoPDF(s){
+      if(!s.pdfTipo){
+        return "Selecciona qué tipo de PDF es antes de auditar esta fuente.";
+      }
+      if(s.pdfTipo !== "nativo"){
+        return "Este sistema solo acepta PDF Nativo (texto embebido). Un PDF por OCR o escaneado no garantiza que el texto citado sea exacto — consigue la versión nativa del documento.";
+      }
+      return null;
+    }
+
+    // Lista de palabras prohibidas para el Veredicto del Epistemólogo:
+    // adjetivos calificativos y lenguaje comercial. No es un análisis de
+    // IA -- es una lista negra simple, honesta sobre sus límites.
+    const PALABRAS_PROHIBIDAS_EPISTEMOLOGO = [
+      "increíble","excelente","extraordinario","revolucionario","innovador",
+      "impresionante","alarmante","grave","terrible","fantástico","asombroso",
+      "líder del mercado","de clase mundial","mejor solución","sin precedentes",
+      "espectacular","brillante","perfecto","ideal","óptimo"
+    ];
+
+    function buscarPalabraProhibida(texto){
+      const textoLower = texto.toLowerCase();
+      return PALABRAS_PROHIBIDAS_EPISTEMOLOGO.find(palabra => textoLower.includes(palabra));
+    }
+
+    // Candado del método fáctico de Bunge: exige una proposición central,
+    // su prueba con número de página (o la etiqueta explícita de
+    // "hipótesis sin comprobación"), un reporte de objetividad y las
+    // limitaciones metodológicas. Bloquea lenguaje calificativo/comercial.
+    function validarEpistemologo(s){
+      const verdad = (s.epiVerdad || "").trim();
+      const justificacion = (s.epiJustificacion || "").trim();
+      const objetividad = (s.epiObjetividad || "").trim();
+      const metodo = (s.epiMetodo || "").trim();
+      const sinComprobacion = !!s.epiSinComprobacion;
+
+      if(!verdad){
+        return "Completa 'Verdad fáctica' antes de auditar: nombra la proposición central demostrada en el PDF.";
+      }
+
+      const textoCombinado = `${verdad} ${objetividad} ${metodo}`;
+      const palabraProhibida = buscarPalabraProhibida(textoCombinado);
+      if(palabraProhibida){
+        return `Lenguaje no permitido (Bunge): encontré la palabra "${palabraProhibida}" en tu veredicto. Nada de adjetivos calificativos ni lenguaje comercial — describe los hechos de forma neutra.`;
+      }
+
+      if(!sinComprobacion){
+        if(!justificacion){
+          return "Completa 'Justificación' con la prueba material y el número de página, o marca la casilla 'Hipótesis sin comprobación' si el texto no la sustenta.";
+        }
+        const tienePagina = /(p\.|pág\.|página)\s*\d+/i.test(justificacion);
+        if(!tienePagina){
+          return "Falta el número de página (Bunge exige verificación material): escribe algo como \"p. 12\" dentro de tu Justificación, o marca 'Hipótesis sin comprobación' si esa prueba no existe en el texto.";
+        }
+      }
+
+      if(!objetividad){
+        return "Completa 'Objetividad': reporta si el autor exagera sus resultados o muestra sesgos (aunque sea para decir que no encontraste ninguno).";
+      }
+
+      if(!metodo){
+        return "Completa 'Método': enlista las limitaciones metodológicas que el propio texto declara (aunque sea para decir que el texto no declara ninguna).";
+      }
+
+      return null;
+    }
+  
     function auditSource(s){
       const methodology=Math.min(
         20,
