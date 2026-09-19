@@ -854,7 +854,7 @@
       <div class="field">
         <label for="bitPrompt">Prompt exploratorio generado *</label>
         <textarea id="bitPrompt" name="bitPrompt" readonly placeholder="Presiona 'Generar Prompt' arriba para armarlo automáticamente."></textarea>
-        <span class="hint">Cópialo y pégaselo tal cual a tu IA de confianza.</span>
+        <span class="hint">Cópialo y pégaselo tal cual a tu IA de confianza. En su respuesta, busca las secciones "VOCABULARIO TÉCNICO:" y "DOMINIOS SUGERIDOS:" al final — de ahí copias directo a los campos de abajo y de la Parte 2.</span>
       </div>
 
       <div class="actions">
@@ -2579,8 +2579,9 @@ function mostrarMensajeBitacora(texto, tipo){
 
 // Parte 1: arma un prompt exploratorio uniendo las selecciones
 // del usuario en un párrafo coherente para pegarlo en cualquier IA.
-// También le pide explícitamente a la IA que sugiera dominios,
-// para que el campo "Dominios sugeridos por la IA" tenga algo que recibir.
+// Le exige a la IA un formato de salida rígido (2 secciones con título
+// exacto) para que el vocabulario técnico y los dominios salgan listos
+// para copiar y pegar, en vez de disueltos en un párrafo libre.
 function generarPromptExploratorio(){
   const rol = document.getElementById("bitRol").value;
   const tarea = document.getElementById("bitTarea").value;
@@ -2595,12 +2596,19 @@ function generarPromptExploratorio(){
     ? restriccionesSeleccionadas.join("; ")
     : "ninguna restricción adicional";
 
-  const prompt = `Actúa como un ${rol}. Tu tarea es ${tarea}, en el contexto de ${contexto}, específicamente sobre ${tema}. Restricciones: ${restriccion}. Además, al final de tu respuesta, sugiéreme entre 3 y 5 dominios o instituciones (universidades, organismos oficiales, bases de datos académicas) donde podría encontrar documentos confiables sobre este tema.`;
+  const prompt = `Actúa como un ${rol}. Tu tarea es ${tarea}, en el contexto de ${contexto}, específicamente sobre ${tema}. Restricciones: ${restriccion}.
+
+Al FINAL de tu respuesta, agrega exactamente estas 2 secciones, con estos títulos EXACTOS (en mayúsculas, tal cual) y en este formato, sin explicaciones adicionales dentro de esas 2 secciones:
+
+VOCABULARIO TÉCNICO: término 1, término 2, término 3, término 4, término 5, término 6, término 7, término 8
+(Entre 8 y 12 términos técnicos, siglas o nombres especializados relacionados con el tema, separados por comas. No expliques cada término, solo sepáralos por comas.)
+
+DOMINIOS SUGERIDOS: dominio1.com, dominio2.org, dominio3.gob.mx
+(Entre 3 y 5 dominios REALES y exactos. SOLO el dominio, nunca el nombre de la institución ni una URL completa con "https://". Ejemplo correcto: "banxico.org.mx". Ejemplo incorrecto: "Banco de México" o "https://www.banxico.org.mx/publicaciones". Si no estás seguro del dominio exacto de una institución, no la incluyas.)`;
 
   document.getElementById("bitPrompt").value = prompt;
   mostrarMensajeBitacora("", "");
-}
-    
+}    
 // Copia cualquier texto al portapapeles y da una señal visual breve
 // en el botón que se presionó (en vez de un alert(), que es molesto
 // en celular).
