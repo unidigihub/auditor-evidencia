@@ -1547,13 +1547,15 @@ while(app.bitacoras.length < 5){
         mainFinding="La evidencia aportada no permite determinar si la afirmación es correcta o incorrecta.";
       }
 
-      const confidence=
-        total>=80&&hasPrimary
-          ?"Alta"
-          :total>=55
-            ?"Media"
-            :"Baja";
-
+            const confidence=
+        (color==="red"||color==="black")
+          ?"Baja"
+          :total>=80&&hasPrimary
+            ?"Alta"
+            :total>=55
+              ?"Media"
+              :"Baja";
+      
       return {
         auditId:uid(),
         timestamp:new Date().toISOString(),
