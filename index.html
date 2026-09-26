@@ -973,10 +973,16 @@
         <span class="hint">Estas palabras se restarán de tu búsqueda para filtrar cursos y ventas.</span>
       </div>
 
+      <div class="field">
+        <label for="bitTerminoAnd">Palabra obligatoria adicional (opcional)</label>
+        <input id="bitTerminoAnd" placeholder='Ej. México'>
+        <span class="hint">Se unirá con el operador <code>AND</code>: exige que ESTA palabra aparezca junto con cada término técnico, no una u otra.</span>
+      </div>
+
       <div class="actions">
         <button type="button" class="btn secondary" id="btnGenerarCadenas">🧮 Generar Cadenas Booleanas</button>
       </div>
-
+    
       <div id="bitCadenasResultado" class="cadenas-lista">
         <p class="hint">Aún no has generado ninguna cadena. Completa el vocabulario y los dominios de arriba.</p>
       </div>
