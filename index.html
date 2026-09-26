@@ -2608,12 +2608,15 @@ function emptyBitacora(){
 }
 
 function cargarBitacora(){
+ function cargarBitacora(){
   const b = app.bitacoras[app.current];
     document.getElementById("bitPrompt").value = b.prompt;
   document.getElementById("bitVocabulario").value = b.vocabulario;
   document.getElementById("bitDominiosIA").value = b.dominiosIA || "";
   document.getElementById("bitTema").value = b.tema || "";
   document.getElementById("bitDominiosExtra").value = b.dominiosExtra || "";
+  document.getElementById("bitTerminoAnd").value = b.terminoAnd || "";
+  document.getElementById("bitPromptSecundario").value = b.promptSecundario || "";
   document.getElementById("bitCadena").value = b.cadena;
   renderCadenasGuardadas(b.cadena);
 
