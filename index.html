@@ -2091,15 +2091,15 @@ function recordsForExport(){
   body:JSON.stringify({records})
 });
 
-    status.textContent=
-      "Auditoría cerrada y Matriz enviada a Google Sheets";
+      status.textContent=
+      "Solicitud enviada (verifica manualmente en la hoja de Google Sheets)";
 
     if(isClosing){
-      alert("Auditoría cerrada. La Matriz fue enviada y el Dashboard se generó automáticamente.");
+      alert("Auditoría cerrada. La solicitud fue enviada — por favor confirma en la hoja “Resultados” que tus datos llegaron correctamente.");
     }else{
-      alert("Envío completado. Verifica la hoja “Resultados”.");
+      alert("Solicitud enviada. Confirma en la hoja “Resultados” que tus datos aparecen ahí.");
     }
-
+    
     return true;
   }catch(error){
     status.textContent="No se pudo completar el envío";
