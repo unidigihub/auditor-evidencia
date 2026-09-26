@@ -2722,7 +2722,8 @@ function renderCadenasGuardadas(cadenaTexto){
 // Parte 2: toma el vocabulario técnico (separado por comas) y genera
 // una fórmula booleana distinta por cada término. Combina los dominios
 // marcados con checkbox MÁS los que el usuario haya pegado desde la
-// Parte 1 en "bitDominiosExtra", todos unidos con OR.
+// Parte 1 en "bitDominiosExtra", todos unidos con OR. Si hay una
+// "palabra obligatoria adicional", la exige con el operador AND.
 function generarCadenasBooleanas(){
   const terminos = document.getElementById("bitVocabulario").value
     .split(",")
@@ -2740,6 +2741,7 @@ function generarCadenasBooleanas(){
 
   const dominios = [...dominiosCheckeados, ...dominiosExtra];
   const exclusiones = [...document.querySelectorAll(".bit-exclusion:checked")].map(el => el.value);
+  const terminoAnd = document.getElementById("bitTerminoAnd").value.trim();
 
   const contenedor = document.getElementById("bitCadenasResultado");
 
@@ -2757,16 +2759,17 @@ function generarCadenasBooleanas(){
 
   const bloqueDominios = "(" + dominios.join(" OR ") + ")";
   const bloqueExclusiones = exclusiones.join(" ");
+  const bloqueAnd = terminoAnd ? `AND "${terminoAnd}"` : "";
 
   const cadenas = terminos.map(termino =>
-    `${bloqueDominios} filetype:pdf "${termino}" ${bloqueExclusiones}`.trim().replace(/\s+/g, " ")
+    `${bloqueDominios} filetype:pdf "${termino}" ${bloqueAnd} ${bloqueExclusiones}`.trim().replace(/\s+/g, " ")
   );
 
   document.getElementById("bitCadena").value = cadenas.join("\n");
   renderCadenasGuardadas(cadenas.join("\n"));
   mostrarMensajeBitacora("", "");
 }
-   
+    
 function validarReglaEco(datos){
   const cadena = datos.cadena.toLowerCase();
   const tieneSite = cadena.includes("site:");
