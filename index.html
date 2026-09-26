@@ -1352,13 +1352,13 @@ while(app.bitacoras.length < 5){
     // Lista de palabras prohibidas para el Veredicto del Epistemólogo:
     // adjetivos calificativos y lenguaje comercial. No es un análisis de
     // IA -- es una lista negra simple, honesta sobre sus límites.
-    const PALABRAS_PROHIBIDAS_EPISTEMOLOGO = [
+      const PALABRAS_PROHIBIDAS_EPISTEMOLOGO = [
       "increíble","excelente","extraordinario","revolucionario","innovador",
-      "impresionante","alarmante","grave","terrible","fantástico","asombroso",
+      "impresionante","alarmante","fantástico","asombroso",
       "líder del mercado","de clase mundial","mejor solución","sin precedentes",
       "espectacular","brillante","perfecto","ideal","óptimo"
     ];
-
+    
     function buscarPalabraProhibida(texto){
       const textoLower = texto.toLowerCase();
       return PALABRAS_PROHIBIDAS_EPISTEMOLOGO.find(palabra => textoLower.includes(palabra));
