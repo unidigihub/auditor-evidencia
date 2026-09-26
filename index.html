@@ -2769,8 +2769,33 @@ function generarCadenasBooleanas(){
   renderCadenasGuardadas(cadenas.join("\n"));
   mostrarMensajeBitacora("", "");
 }
-    
+
+// "Ampliar", "Refinar" y "Traducir": tres prompts que reutilizan el
+// vocabulario ya escrito en la Parte 2 para pedirle más ayuda a la IA,
+// en vez de escribir un prompt nuevo desde cero cada vez.
+function generarPromptSecundario(tipo){
+  const vocabulario = document.getElementById("bitVocabulario").value.trim();
+
+  if(!vocabulario){
+    alert("Primero escribe algo en 'Vocabulario técnico' arriba — estos botones parten de esos términos.");
+    return;
+  }
+
+  let prompt = "";
+
+  if(tipo === "ampliar"){
+    prompt = `Tengo estos términos técnicos: ${vocabulario}. Dame entre 5 y 8 términos SINÓNIMOS o RELACIONADOS que amplíen mi búsqueda sobre el mismo tema, sin salirme del tema original. Responde solo con: VOCABULARIO TÉCNICO: término1, término2, término3...`;
+  } else if(tipo === "refinar"){
+    prompt = `Tengo estos términos técnicos: ${vocabulario}, pero mi búsqueda trajo resultados demasiado generales o poco relevantes. Dame entre 5 y 8 términos MÁS ESPECÍFICOS (subcategorías, nombres de metodologías, variables concretas) que reduzcan el ruido. Responde solo con: VOCABULARIO TÉCNICO: término1, término2, término3...`;
+  } else if(tipo === "traducir"){
+    prompt = `Traduce estos términos técnicos al inglés, conservando su significado técnico exacto (usa el término establecido en inglés si existe, no una traducción literal palabra por palabra): ${vocabulario}. Responde solo con: VOCABULARIO TÉCNICO: term1, term2, term3...`;
+  }
+
+  document.getElementById("bitPromptSecundario").value = prompt;
+}
+
 function validarReglaEco(datos){
+
   const cadena = datos.cadena.toLowerCase();
   const tieneSite = cadena.includes("site:");
   const tieneFiletype = cadena.includes("filetype:pdf");
