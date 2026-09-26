@@ -2849,6 +2849,18 @@ function initBitacora(){
     copiarTexto(texto, document.getElementById("btnCopiarPrompt"));
   });
   document.getElementById("btnGenerarCadenas").addEventListener("click", generarCadenasBooleanas);
+  document.getElementById("btnAmpliar").addEventListener("click", () => generarPromptSecundario("ampliar"));
+  document.getElementById("btnRefinar").addEventListener("click", () => generarPromptSecundario("refinar"));
+  document.getElementById("btnTraducir").addEventListener("click", () => generarPromptSecundario("traducir"));
+  document.getElementById("btnCopiarPromptSecundario").addEventListener("click", () => {
+    const texto = document.getElementById("bitPromptSecundario").value.trim();
+    if(!texto){
+      alert("Primero genera un prompt con Ampliar, Refinar o Traducir.");
+      return;
+    }
+    copiarTexto(texto, document.getElementById("btnCopiarPromptSecundario"));
+  });
+  
   document.getElementById("btnUsarDominiosIA").addEventListener("click", () => {
     document.getElementById("bitDominiosExtra").value = document.getElementById("bitDominiosIA").value;
   });
