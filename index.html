@@ -10,7 +10,7 @@
     :root{
       --navy:#10253f;--blue:#176b87;--cyan:#dff5f7;--paper:#f5f7fb;
       --white:#fff;--ink:#182534;--muted:#627184;--line:#d9e1ea;
-      --green:#15803d;--green-bg:#dcfce7;--yellow:#a16207;
+      --green:#15803df;--green-bg:#dcfce7;--yellow:#a16207;
       --yellow-bg:#fef3c7;--red:#b91c1c;--red-bg:#fee2e2;
       --black:#273444;--black-bg:#e5e7eb;--shadow:0 8px 28px #10253f14;
     }
@@ -912,14 +912,34 @@
         <strong>Tip:</strong> pega aquí los términos técnicos que la IA te devolvió en su respuesta.
       </div>
 
-           <div class="field">
+                <div class="field">
         <label for="bitVocabulario">Vocabulario técnico (separado por comas) *</label>
         <textarea id="bitVocabulario" name="bitVocabulario" placeholder="Ej. inclusión financiera, agricultura de precisión"></textarea>
         <span class="hint">Se generará una cadena de búsqueda distinta por cada término que escribas aquí.</span>
       </div>
 
       <div class="field">
+        <label>¿Tu vocabulario no te sirvió? Pide ayuda a la IA</label>
+        <div class="actions">
+          <button type="button" class="btn light" id="btnAmpliar">🔎 Ampliar</button>
+          <button type="button" class="btn light" id="btnRefinar">🎯 Refinar</button>
+          <button type="button" class="btn light" id="btnTraducir">🌐 Traducir</button>
+        </div>
+        <span class="hint">Genera un prompt nuevo tomando tu vocabulario de arriba. Cópialo, pégaselo a tu IA, y con su respuesta actualiza el campo "Vocabulario técnico".</span>
+      </div>
+
+      <div class="field">
+        <label for="bitPromptSecundario">Prompt generado</label>
+        <textarea id="bitPromptSecundario" readonly placeholder="Aparecerá aquí al presionar Ampliar, Refinar o Traducir."></textarea>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn secondary" id="btnCopiarPromptSecundario">📋 Copiar Prompt</button>
+      </div>
+
+      <div class="field">
         <label for="bitDominiosExtra">Dominios sugeridos por la IA en la Parte 1 (opcional)</label>
+        
         <textarea id="bitDominiosExtra" placeholder="Ej. banxico.org.mx, inegi.org.mx, cepal.org"></textarea>
         <span class="hint">Sepáralos por comas. Se sumarán a los buscadores que marques abajo, combinados con "OR".</span>
       </div>
