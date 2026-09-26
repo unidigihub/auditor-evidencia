@@ -2091,13 +2091,13 @@ function recordsForExport(){
   body:JSON.stringify({records})
 });
 
-      status.textContent=
-      "Solicitud enviada (verifica manualmente en la hoja de Google Sheets)";
+    status.textContent=
+      "Solicitud enviada (no es posible confirmar automáticamente la recepción)";
 
     if(isClosing){
-      alert("Auditoría cerrada. La solicitud fue enviada — por favor confirma en la hoja “Resultados” que tus datos llegaron correctamente.");
+      alert("Auditoría cerrada y enviada. Por seguridad, exporta también tu CSV o JSON (botones de abajo) y guárdalo como respaldo — es tu comprobante de que completaste la actividad.");
     }else{
-      alert("Solicitud enviada. Confirma en la hoja “Resultados” que tus datos aparecen ahí.");
+      alert("Solicitud enviada. Por seguridad, te recomendamos exportar tu CSV o JSON como respaldo.");
     }
     
     return true;
