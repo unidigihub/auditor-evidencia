@@ -2364,6 +2364,7 @@ function recordsForExport(){
     }
 
     function exportJSON(){
+    autoGuardar();
       download(
         "auditor-evidencia.json",
         JSON.stringify(app,null,2),
