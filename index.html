@@ -1153,7 +1153,7 @@ if(!app.perfil.personName && !app.perfil.personId){
       app.current = 0;
     }
 
-    let timerSeconds = 3000;
+    let timerSeconds = (typeof app.timer === "number" && app.timer >= 0 && app.timer <= 3000) ? app.timer : 3000;
     let timerRunning = false;
     let timerInterval;
 
