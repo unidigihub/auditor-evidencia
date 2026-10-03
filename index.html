@@ -2772,6 +2772,23 @@ function emptyBitacora(){
     document.getElementById("bitDominio" + i).value = dominiosGuardados[i-1] || "";
   }
 
+  const poner = (id, valor) => {
+    const el = document.getElementById(id);
+    el.selectedIndex = 0;
+    if(valor) el.value = valor;
+  };
+  poner("bitRol", b.rol);
+  poner("bitTarea", b.tarea);
+  poner("bitContexto", b.contexto);
+  document.getElementById("bitContextoOtro").value = b.contextoOtro || "";
+  document.getElementById("bitContextoOtroWrap").style.display =
+    document.getElementById("bitContexto").value === "otro" ? "block" : "none";
+  const marcar = (sel, lista) => document.querySelectorAll(sel).forEach(c => {
+    c.checked = (lista || []).includes(c.value);
+  });
+  marcar(".bit-restriccion", b.restricciones);
+  marcar(".bit-dominio", b.buscadores);
+  marcar(".bit-exclusion", b.exclusiones);  
   document.getElementById("bitVerificado").checked = !!b.verificado;
   mostrarMensajeBitacora("", "");
 
