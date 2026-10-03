@@ -1103,7 +1103,15 @@
       audit:null
     });
 
-    let app = JSON.parse(localStorage.getItem("auditorEvidenciaData") || "null") || {
+    function leerGuardado(){
+      try{
+        return JSON.parse(localStorage.getItem("auditorEvidenciaData") || "null");
+      }catch(e){
+        return null;
+      }
+    }
+    let app = leerGuardado() || {
+    
   sources:Array.from({length:5},emptySource),
   current:0,
   perfil:{ personName:"", personId:"", age:"", gender:"" }
