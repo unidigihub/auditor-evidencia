@@ -3147,6 +3147,41 @@ function initBitacora(){
     });
     window.addEventListener("pagehide", autoGuardar);
     setInterval(autoGuardar, 10000);
+        function importarJSON(){
+      const entrada = document.getElementById("archivoRespaldo");
+      entrada.value = "";
+      entrada.click();
+    }
+
+    document.getElementById("archivoRespaldo").addEventListener("change", (e) => {
+      const archivo = e.target.files[0];
+      if(!archivo) return;
+      const lector = new FileReader();
+      lector.onload = () => {
+        let datos;
+        try{
+          datos = JSON.parse(lector.result);
+          if(!datos || !Array.isArray(datos.sources) || !datos.perfil){
+            throw new Error("formato");
+          }
+        }catch(err){
+          alert("Este archivo no parece un respaldo válido del Auditor. Usa el archivo auditor-evidencia.json que descargaste con «Exportar JSON».");
+          return;
+        }
+        if(!confirm("Esto REEMPLAZARÁ todo lo que hay ahora en este dispositivo por el contenido del respaldo. ¿Continuar?")){
+          return;
+        }
+        window.__importando = true;
+        try{
+          localStorage.setItem("auditorEvidenciaData", JSON.stringify(datos));
+          location.reload();
+        }catch(err){
+          window.__importando = false;
+          alert("No se pudo guardar el respaldo en este dispositivo.");
+        }
+      };
+      lector.readAsText(archivo);
+    });
     
     initBitacora();
     renderTimer();
