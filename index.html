@@ -1158,10 +1158,17 @@ if(!app.perfil.personName && !app.perfil.personId){
         crypto.getRandomValues(new Uint32Array(1))[0].toString(36).toUpperCase();
     }
 
-    function persist(){
-      localStorage.setItem("auditorEvidenciaData",JSON.stringify(app));
+      function persist(){
+      try{
+        localStorage.setItem("auditorEvidenciaData",JSON.stringify(app));
+      }catch(e){
+        if(!window.__avisoAlmacenamiento){
+          window.__avisoAlmacenamiento = true;
+          alert("⚠️ Este navegador no permite guardar datos en el dispositivo (¿modo privado o memoria llena?). Tu avance NO se está guardando. Usa «Exportar JSON» para descargar un respaldo antes de cerrar.");
+        }
+      }
     }
-
+    
     function escapeHTML(value){
       return String(value ?? "").replace(/[&<>"']/g,c=>({
         "&":"&amp;",
