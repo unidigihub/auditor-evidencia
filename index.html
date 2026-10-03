@@ -1484,11 +1484,26 @@ while(app.bitacoras.length < 5){
       "espectacular","brillante","perfecto","ideal","óptimo"
     ];
     
-    function buscarPalabraProhibida(texto){
-      const textoLower = texto.toLowerCase();
-      return PALABRAS_PROHIBIDAS_EPISTEMOLOGO.find(palabra => textoLower.includes(palabra));
+       function normalizarTexto(t){
+      return String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     }
 
+    function buscarPalabraProhibida(texto){
+      const limpio = " " + normalizarTexto(texto).replace(/[^a-z0-9]+/g, " ").trim() + " ";
+      return PALABRAS_PROHIBIDAS_EPISTEMOLOGO.find(palabra => {
+        const p = normalizarTexto(palabra).replace(/[^a-z0-9]+/g, " ").trim();
+        let patron;
+        if(p.includes(" ")){
+          patron = p;
+        }else if(p.endsWith("o")){
+          patron = p.slice(0,-1) + "(o|a|os|as)";
+        }else{
+          patron = p + "(s|es)?";
+        }
+        return new RegExp(" " + patron + " ").test(limpio);
+      });
+    }
+    
     // Candado del método fáctico de Bunge: exige una proposición central,
     // su prueba con número de página (o la etiqueta explícita de
     // "hipótesis sin comprobación"), un reporte de objetividad y las
