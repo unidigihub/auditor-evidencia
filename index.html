@@ -3121,8 +3121,10 @@ function initBitacora(){
       persist();
     }
 
-    function autoGuardar(){
+        function autoGuardar(){
+      if(window.__importando) return;
       try{
+        app.timer = timerSeconds;
         guardarPerfil();
         collectForm();
         guardarBorradorBitacora();
