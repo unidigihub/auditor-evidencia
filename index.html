@@ -2290,6 +2290,7 @@ function recordsForExport(){
   decision_auditor: s.cellDecision,
   posible_alucinacion: s.audit?.possibleHallucination ? "Sí" : "No",
   preservacion_incompleta: s.audit?.preservationIncomplete ? "Sí" : "No",
+  etiquetas: s.tags || "",      
   bitacora_cadenas: ((app.bitacoras && app.bitacoras[i] && app.bitacoras[i].cadena) || "").replaceAll("\n", " | "),
   bitacora_dominios_reales: ((app.bitacoras && app.bitacoras[i] && app.bitacoras[i].dominios) || []).filter(Boolean).join(", ")       
 };
