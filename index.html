@@ -1142,6 +1142,10 @@ if(!app.perfil.personName && !app.perfil.personId){
     while(app.sources.length < 5){
       app.sources.push(emptySource());
     }
+    app.sources = app.sources.map(s => ({...emptySource(), ...s}));
+    if(typeof app.current !== "number" || app.current < 0 || app.current > 4){
+      app.current = 0;
+    }
 
     let timerSeconds = 3000;
     let timerRunning = false;
