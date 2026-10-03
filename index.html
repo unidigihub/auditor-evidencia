@@ -2114,7 +2114,8 @@ function showView(name){
   renderAll();
   window.scrollTo({top:0,behavior:"smooth"});
 }
-    function toggleTimer(){
+        function toggleTimer(){
+      if(timerSeconds === 0) return;
       timerRunning=!timerRunning;
 
       if(timerRunning){
@@ -2125,6 +2126,7 @@ function showView(name){
           if(timerSeconds===0){
             clearInterval(timerInterval);
             timerRunning=false;
+            renderTimer();
             alert("Terminó la sesión de 50 minutos. Revisen y discutan sus conclusiones.");
           }
         },1000);
@@ -2134,7 +2136,7 @@ function showView(name){
 
       renderTimer();
     }
-
+    
     function renderTimer(){
       const minutes=String(Math.floor(timerSeconds/60)).padStart(2,"0");
       const seconds=String(timerSeconds%60).padStart(2,"0");
