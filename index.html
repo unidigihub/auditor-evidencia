@@ -1325,8 +1325,8 @@ while(app.bitacoras.length < 5){
     reiniciarAuditoria(true);
   });
 
-  if(!localStorage.getItem("auditorEndpoint")){
-    localStorage.setItem("auditorEndpoint",DEFAULT_ENDPOINT);
+   if(app.vista && app.vista !== "instructions" && document.getElementById("view-" + app.vista)){
+    showView(app.vista);
   }
 }
     function renderPicker(){
