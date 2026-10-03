@@ -2,7 +2,7 @@
 // Guarda una copia de la app en el dispositivo para que pueda
 // abrirse sin conexión a internet.
 
-const CACHE_NAME = "auditor-evidencia-v1";
+const CACHE_NAME = "auditor-evidencia-v2";
 
 // Lo mínimo que la app necesita para poder abrirse sin internet.
 const ARCHIVOS_A_GUARDAR = [
