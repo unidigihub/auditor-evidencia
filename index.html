@@ -1451,6 +1451,7 @@ while(app.bitacoras.length < 5){
 
     // Candado de tipo de PDF: solo se acepta el nativo, porque es el
     // único donde el texto citado se puede verificar con certeza.
+        function validarTipoPDF(s){
          const idxFuente = app.sources.indexOf(s);
       if(idxFuente >= 0 && !(app.bitacoras[idxFuente] && app.bitacoras[idxFuente].validada)){
         return "Falta guardar la Bitácora de búsqueda de esta fuente (pestaña «Bitácora de búsqueda»).";
