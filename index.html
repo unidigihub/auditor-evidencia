@@ -2218,6 +2218,61 @@ function recordsForExport(){
 };
     }
 
+    // Arma el prompt "Arquitecto de Información" de la Sesión 5 tal
+    // cual, pero si las fuentes auditadas ya tienen "Etiquetas"
+    // escritas, las usa como vocabulario controlado automáticamente
+    // en vez de dejar el placeholder vacío.
+    function generarPromptCurador(){
+      const fuentesAuditadas = app.sources.filter(s => s.audit);
+
+      if(!fuentesAuditadas.length){
+        alert("Audita al menos una fuente antes de generar el Prompt Curador.");
+        return;
+      }
+
+      const etiquetasUnicas = [...new Set(
+        fuentesAuditadas
+          .flatMap(s => (s.tags || "").split(","))
+          .map(t => t.trim())
+          .filter(Boolean)
+      )];
+
+      const listaVocabulario = etiquetasUnicas.length
+        ? etiquetasUnicas.join(", ")
+        : "[PEGA AQUÍ TU LISTA]";
+
+      const prompt = `[Rol]: Actúa como Arquitecto de Información y Gestor de Conocimiento Digital, experto en taxonomías corporativas. Tu función es indexar, no analizar ni opinar.
+
+[Contexto]: Analiza el archivo CSV adjunto, el cual contiene los datos crudos extraídos de nuestro Auditor de Evidencia. Cada fila es una fuente que ya pasó el filtro de rigor fáctico. Tu salida alimentará una base de datos en Notion, por lo que cada campo debe ser recuperable y trazable a la fila de origen.
+
+[Tarea]: Para cada fila del CSV, genera únicamente los metadatos de indexación del formato de salida.
+
+[Regla de oro]: Usa exclusivamente el contenido del CSV. No uses conocimiento externo, no busques en la web y no completes información ausente. Si un dato no está en el CSV, escribe "NO CONSTA EN CSV". Nunca lo deduzcas.
+
+[Restricciones]:
+1. No evalúes la veracidad ni corrijas la fuente. Indexa lo que hay.
+2. Copia literalmente (sin reescribir) título, institución, autor, fecha, cifras, números de página y enlaces (URL original y Perma.cc).
+3. Resumen Curado: máximo 40 palabras. Solo hechos presentes en el CSV. Cero adjetivos calificativos ni lenguaje comercial. No conviertas correlaciones en causalidades.
+4. Taxonomía: exactamente 3 etiquetas, de una sola palabra o sigla cada una. Cada etiqueta debe aparecer textualmente en el CSV o pertenecer a este vocabulario controlado: ${listaVocabulario}. Si no hay 3 etiquetas que cumplan, entrega menos y escribe "NO CONSTA" en las faltantes.
+5. Pregunta de Recuperación y Aplicabilidad son interpretaciones. Deben derivarse solo del Resumen Curado y nunca introducir datos nuevos. Aplicabilidad: máximo 10 palabras.
+6. Procesa todas las filas, en el mismo orden, sin fusionar ni omitir ninguna. Al final, indica cuántas filas recibiste y cuántas indexaste.
+
+[Formato de salida]: Una ficha por fuente, con estos campos exactos:
+1. ID de fila (copiado del CSV):
+2. Fuente (título literal):
+3. Enlace original / Perma.cc (literal):
+4. Dato clave y página (literal, o "NO CONSTA EN CSV"):
+5. Resumen Curado:
+6. Taxonomía:
+7. Pregunta de Recuperación [interpretación]:
+8. Aplicabilidad [interpretación]:
+9. Campos ausentes en el CSV:
+
+[Verificación final]: Antes de responder, revisa que cada cifra, página, título y enlace coincida carácter por carácter con el CSV y que no hayas añadido nada externo. Si dudas de un dato, márcalo como "REVISAR" en lugar de corregirlo.`;
+
+      document.getElementById("promptCurador").value = prompt;
+    }
+
     function download(name,text,type){
       const link=document.createElement("a");
       link.href=URL.createObjectURL(new Blob([text],{type}));
