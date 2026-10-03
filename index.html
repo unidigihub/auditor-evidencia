@@ -3078,6 +3078,73 @@ function initBitacora(){
 }
     
        init();
+    // AUTOGUARDADO Y BORRADOR DE BITÁCORA
+    function recogerBitacora(){
+      const marcados = sel => [...document.querySelectorAll(sel + ":checked")].map(el => el.value);
+      return {
+        prompt: document.getElementById("bitPrompt").value,
+        vocabulario: document.getElementById("bitVocabulario").value,
+        dominiosIA: document.getElementById("bitDominiosIA").value,
+        tema: document.getElementById("bitTema").value,
+        dominiosExtra: document.getElementById("bitDominiosExtra").value,
+        terminoAnd: document.getElementById("bitTerminoAnd").value,
+        promptSecundario: document.getElementById("bitPromptSecundario").value,
+        cadena: document.getElementById("bitCadena").value,
+        dominios: [1,2,3,4,5].map(n => document.getElementById("bitDominio" + n).value.trim()),
+        verificado: document.getElementById("bitVerificado").checked,
+        rol: document.getElementById("bitRol").value,
+        tarea: document.getElementById("bitTarea").value,
+        contexto: document.getElementById("bitContexto").value,
+        contextoOtro: document.getElementById("bitContextoOtro").value,
+        restricciones: marcados(".bit-restriccion"),
+        buscadores: marcados(".bit-dominio"),
+        exclusiones: marcados(".bit-exclusion")
+      };
+    }
+
+    function guardarBorradorBitacora(){
+      const b = app.bitacoras && app.bitacoras[app.current];
+      if(!b) return;
+      const yaValidada = b.validada;
+      app.bitacoras[app.current] = { ...b, ...recogerBitacora(), validada: yaValidada };
+      persist();
+    }
+
+    function guardarPerfil(){
+      const n = document.getElementById("perfilNombre");
+      if(!n) return;
+      app.perfil.personName = n.value;
+      app.perfil.personId = document.getElementById("perfilEmail").value;
+      app.perfil.age = document.getElementById("perfilEdad").value;
+      app.perfil.gender = document.getElementById("perfilGenero").value;
+      persist();
+    }
+
+    function autoGuardar(){
+      try{
+        guardarPerfil();
+        collectForm();
+        guardarBorradorBitacora();
+      }catch(e){
+        console.error("Autoguardado:", e);
+      }
+    }
+
+    let temporizadorAuto;
+    function programarAutoGuardado(){
+      clearTimeout(temporizadorAuto);
+      temporizadorAuto = setTimeout(autoGuardar, 800);
+    }
+
+    document.addEventListener("input", programarAutoGuardado);
+    document.addEventListener("change", programarAutoGuardado);
+    document.addEventListener("click", programarAutoGuardado);
+    document.addEventListener("visibilitychange", () => {
+      if(document.visibilityState === "hidden") autoGuardar();
+    });
+    window.addEventListener("pagehide", autoGuardar);
+    setInterval(autoGuardar, 10000);
+    
     initBitacora();
   </script>
 
