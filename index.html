@@ -2082,6 +2082,8 @@ function showView(name){
     collectForm();
   }
 
+  app.vista = name;
+  persist();
   document.querySelectorAll(".view").forEach(view=>{
     view.classList.toggle("active",view.id==="view-"+name);
   });
