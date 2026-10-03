@@ -1290,7 +1290,17 @@ while(app.bitacoras.length < 5){
     renderSingleResult();
     renderPicker();
   });
-     
+
+  document.getElementById("btnGenerarPromptCurador").addEventListener("click", generarPromptCurador);
+  document.getElementById("btnCopiarPromptCurador").addEventListener("click", () => {
+    const texto = document.getElementById("promptCurador").value.trim();
+    if(!texto){
+      alert("Primero genera el prompt con el botón de arriba.");
+      return;
+    }
+    copiarTexto(texto, document.getElementById("btnCopiarPromptCurador"));
+  });
+
   document.getElementById("btnReiniciar").addEventListener("click",()=>{
     reiniciarAuditoria(true);
   });
