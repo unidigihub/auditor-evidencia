@@ -2180,46 +2180,60 @@ function recordsForExport(){
   async function sendResults(isClosing=false){
   collectForm();
 
-  const endpoint =
-    localStorage.getItem("auditorEndpoint") || DEFAULT_ENDPOINT;
-
-  const records=recordsForExport();
+  const records = recordsForExport();
 
   if(!records.length){
     alert("No hay resultados auditados.");
     return false;
   }
 
-  const status=document.getElementById("syncStatus");
-  status.textContent="Enviando Matriz…";
+  const status = document.getElementById("syncStatus");
+
+  if(!navigator.onLine){
+    status.textContent = "Sin conexión: tu trabajo está guardado en este dispositivo";
+    alert("Ahora mismo no tienes internet. Tu trabajo está guardado en este dispositivo. Cuando vuelvas a tener conexión, abre la app y presiona de nuevo «Cerrar auditoría y enviar Matriz».");
+    return false;
+  }
+
+  status.textContent = "Enviando Matriz…";
+  const cuerpo = JSON.stringify({records});
+  const cabeceras = {"Content-Type":"text/plain;charset=utf-8"};
+
+  let respuesta = null;
+  try{
+    const resp = await fetch(DEFAULT_ENDPOINT,{method:"POST",headers:cabeceras,body:cuerpo});
+    respuesta = await resp.json();
+  }catch(error){
+    respuesta = null;
+  }
+
+  if(respuesta && respuesta.ok === false){
+    status.textContent = "El servidor rechazó el envío";
+    alert("El servidor rechazó el envío: " + (respuesta.error || "error desconocido") + ". Avísale a tu profesor(a).");
+    return false;
+  }
+
+  if(respuesta && respuesta.ok === true){
+    status.textContent = "Enviado y confirmado (" + respuesta.filas + " fuentes recibidas)";
+    alert(isClosing
+      ? "Auditoría cerrada y recibida (" + respuesta.filas + " fuentes). Por seguridad, exporta también tu CSV o JSON y guárdalo como respaldo."
+      : "Envío confirmado (" + respuesta.filas + " fuentes). Te recomendamos exportar tu CSV o JSON como respaldo.");
+    return true;
+  }
 
   try{
-    await fetch(endpoint,{
-  method:"POST",
-  mode:"no-cors",
-  headers:{
-    "Content-Type":"text/plain;charset=utf-8"
-  },
-  body:JSON.stringify({records})
-});
-
-    status.textContent=
-      "Solicitud enviada (no es posible confirmar automáticamente la recepción)";
-
-    if(isClosing){
-      alert("Auditoría cerrada y enviada. Por seguridad, exporta también tu CSV o JSON (botones de abajo) y guárdalo como respaldo — es tu comprobante de que completaste la actividad.");
-    }else{
-      alert("Solicitud enviada. Por seguridad, te recomendamos exportar tu CSV o JSON como respaldo.");
-    }
-    
+    await fetch(DEFAULT_ENDPOINT,{method:"POST",mode:"no-cors",headers:cabeceras,body:cuerpo});
+    status.textContent = "Solicitud enviada (no es posible confirmar automáticamente la recepción)";
+    alert((isClosing ? "Auditoría cerrada y enviada. " : "Solicitud enviada. ") +
+      "Por seguridad, exporta también tu CSV o JSON (botones de abajo) y guárdalo como respaldo.");
     return true;
   }catch(error){
-    status.textContent="No se pudo completar el envío";
-    alert("Error de conexión. Revisa el despliegue y los permisos de Apps Script.");
+    status.textContent = "No se pudo completar el envío";
+    alert("No se pudo enviar. Tu trabajo sigue guardado en este dispositivo: revisa tu conexión e inténtalo de nuevo.");
     return false;
   }
 }
-
+    
     function flattenRecord(s,i){
       return {
   auditoria_id: s.audit?.auditId || "",
