@@ -2135,13 +2135,11 @@ function showView(name){
     }
 
 function recordsForExport(){
-  return audited().map((s,i)=>({
-    ...app.perfil,
-    ...s,
-    sourceNumber:i+1,
-    auditId:s.audit.auditId
-  }));
-}   
+  return app.sources
+    .map((s,i) => s.audit ? flattenRecord(s,i) : null)
+    .filter(Boolean);
+}
+    
            async function closeAuditAndSend(){
       if(!perfilCompleto()) return;
       collectForm();
