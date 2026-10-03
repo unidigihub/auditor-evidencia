@@ -1368,14 +1368,20 @@ while(app.bitacoras.length < 5){
     
     function switchSource(i){
   collectForm();
+  guardarBorradorBitacora();
   app.current=i;
   persist();
   loadSource();
   cargarBitacora();
   renderPicker();
   renderSingleResult();
+  if(document.getElementById("view-audit").classList.contains("active") &&
+     !(app.bitacoras[i] && app.bitacoras[i].validada)){
+    alert("La Fuente #" + (i+1) + " todavía no tiene su Bitácora de búsqueda guardada. Complétala primero.");
+    showView("bitacora");
+  }
 }
-    
+   
        function loadSource(){
       const s=app.sources[app.current];
       const form=document.getElementById("auditForm");
