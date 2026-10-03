@@ -2254,7 +2254,21 @@ function recordsForExport(){
   total: s.audit?.total || "",      
   clasificacion: s.audit?.label || "",
   riesgo: s.audit?.risk || "",
-  confianza: s.audit?.confidence || ""
+    confianza: s.audit?.confidence || "",
+  triangulacion_independiente: s.independentTriangulation,
+  metodologia_puntos: s.audit ? s.audit.scores.methodology : "",
+  triangulacion_puntos: s.audit ? s.audit.scores.triangulation : "",
+  autoria_puntos: s.audit ? s.audit.scores.authorship : "",
+  transparencia_puntos: s.audit ? s.audit.scores.ethics : "",
+  verosimilitud_puntos: s.audit ? s.audit.scores.verisimilitude : "",
+  hallazgo_principal: s.audit?.mainFinding || "",
+  vacios: s.gaps,
+  recomendacion: s.recommendation,
+  decision_auditor: s.cellDecision,
+  posible_alucinacion: s.audit?.possibleHallucination ? "Sí" : "No",
+  preservacion_incompleta: s.audit?.preservationIncomplete ? "Sí" : "No",
+  bitacora_cadenas: ((app.bitacoras && app.bitacoras[i] && app.bitacoras[i].cadena) || "").replaceAll("\n", " | "),
+  bitacora_dominios_reales: ((app.bitacoras && app.bitacoras[i] && app.bitacoras[i].dominios) || []).filter(Boolean).join(", ")       
 };
     }
 
