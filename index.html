@@ -1962,6 +1962,7 @@ while(app.bitacoras.length < 5){
 
         s.audit.risk
           .split(". ")
+          .filter(r => !r.startsWith("No se detectaron"))
           .filter(Boolean)
           .forEach(risk=>{
             criticalItems.push({
@@ -2060,6 +2061,7 @@ while(app.bitacoras.length < 5){
 
         s.audit.risk
           .split(". ")
+          .filter(r => !r.startsWith("No se detectaron"))
           .filter(Boolean)
           .forEach(risk=>{
             items.push({
