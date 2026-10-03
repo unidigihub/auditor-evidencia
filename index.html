@@ -2923,7 +2923,9 @@ function validarReglaEco(datos){
   const tieneFiletype = cadena.includes("filetype:pdf");
   const tieneComillas = /"[^"]+"/.test(datos.cadena);
 
-  if(datos.cadena.trim().length === 0) return null;
+    if(datos.cadena.trim().length === 0){
+    return "Aún no has generado tus cadenas de búsqueda. Escribe tu vocabulario técnico, marca al menos un buscador y presiona «Generar Cadenas Booleanas» antes de guardar.";
+  }
 
   if(!tieneSite && !tieneFiletype){
     return "Peligro de Segunda Mano (Eco): Tu cadena de búsqueda no incluye filtros estrictos (site: o filetype:). El algoritmo te entregará blogs y rumores comerciales. Ajusta tus operadores.";
