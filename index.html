@@ -708,6 +708,20 @@
           <div class="critical-list" id="dashboardCriticalList"></div>
         </div>
 
+        <div class="card">
+          <h3>🗂️ Prompt Curador (para Notion)</h3>
+          <p class="card-subtitle">Arma el prompt "Arquitecto de Información" listo para pegar junto con tu CSV exportado en ChatGPT, Claude o Gemini.</p>
+          <div class="actions">
+            <button type="button" class="btn light" id="btnGenerarPromptCurador">🗂️ Generar Prompt Curador</button>
+          </div>
+          <div class="field">
+            <textarea id="promptCurador" readonly rows="10" placeholder="Presiona el botón de arriba. Si ya pusiste etiquetas en tus fuentes, se usarán automáticamente como vocabulario controlado."></textarea>
+          </div>
+          <div class="actions">
+            <button type="button" class="btn secondary" id="btnCopiarPromptCurador">📋 Copiar Prompt Curador</button>
+          </div>
+        </div>
+
         <div class="actions">
           <button class="btn secondary" onclick="closeAuditAndSend()">Cerrar auditoría y enviar Matriz</button>
           <button class="btn light" onclick="exportCSV()">Exportar CSV</button>
