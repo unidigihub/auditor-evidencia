@@ -2220,24 +2220,33 @@ function recordsForExport(){
       );
     }
 
-    function exportCSV(){
-      collectForm();
+   function exportCSV(){
+  collectForm();
 
-      const rows=app.sources.map(flattenRecord);
-      const headers=Object.keys(rows[0]);
-      const quote=value=>
-        `"${String(value??"").replaceAll('"','""')}"`;
+  const rows = app.sources
+    .map((s, i) => s.audit ? flattenRecord(s, i) : null)
+    .filter(Boolean);
 
-      download(
-        "matriz-evidencia.csv",
-        "\uFEFF"+[
-          headers.join(","),
-          ...rows.map(row=>
-            headers.map(header=>quote(row[header])).join(",")
-          )
-        ].join("\n"),
-        "text/csv;charset=utf-8"
-      );
+  if(!rows.length){
+    alert("Aún no hay fuentes auditadas para exportar. Audita al menos una fuente antes de exportar el CSV.");
+    return;
+  }
+
+  const headers=Object.keys(rows[0]);
+  const quote=value=>
+    `"${String(value??"").replaceAll('"','""')}"`;
+
+  download(
+    "matriz-evidencia.csv",
+    "\uFEFF"+[
+      headers.join(","),
+      ...rows.map(row=>
+        headers.map(header=>quote(row[header])).join(",")
+      )
+    ].join("\n"),
+    "text/csv;charset=utf-8"
+  );
+      
     }
     // ============================================================
     // PRUEBAS AUTOMÁTICAS A–D DEL AUDITOR
